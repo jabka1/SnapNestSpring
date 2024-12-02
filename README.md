@@ -32,20 +32,22 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/jabka1/SecureLoginSystemSpring
-cd secure-login-system-spring
+cd SecureLoginSystemSpring
 ```
 
-### 2. Configure the Database
+### 2. Rename application.txt to application.properties and fill your data
+
+### 3. Configure the Database
 Edit the application.properties file in src/main/resources:
 ```bash
-spring.datasource.url=jdbc:mysql://localhost:3306/secure_login_system
+spring.datasource.url=jdbc:mysql://localhost:3306/YOUR_DB
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
 ```
 Replace YOUR_USERNAME and YOUR_PASSWORD with your MySQL credentials.
 
-### 3. Configure Google reCAPTCHA
+### 4. Configure Google reCAPTCHA
 To integrate Google reCAPTCHA into your registration form, follow these steps:
 - Go to the Google reCAPTCHA website https://www.google.com/recaptcha/about/.
 - Register your site and get your site key and secret key.
@@ -56,19 +58,19 @@ google.recaptcha.secret.key=YOUR_SECRET_KEY
 ```
 Replace YOUR_SITE_KEY and YOUR_SECRET_KEY with your Google reCAPTCHA site keys.
 
-### 4. Build the Project
+### 5. Build the Project
 Use Maven to build the project:
 ```bash
 mvn clean install
 ```
 
-### 5. Run the Application
+### 6. Run the Application
 Run the application using:
 ```bash
 mvn spring-boot:run
 ```
 
-### 6. Access the Application
+### 7. Access the Application
 Open your browser and navigate to:
 ```bash
 http://localhost:8080
