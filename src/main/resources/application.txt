@@ -12,3 +12,9 @@ spring.jpa.show-sql=true
 google.recaptcha.site.key=YOUR_SITE_KEY
 google.recaptcha.secret.key=YOUR_SECRET_KEY
 
+spring.mail.host=smtp.YOUR_EMAIL_PROVIDER.com
+spring.mail.port=587
+spring.mail.username=YOUR_EMAIL
+spring.mail.password=YOUR_EMAIL_PASSWORD
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true

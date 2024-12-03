@@ -1,5 +1,6 @@
 package team.secureloginsystemspring.service;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,14 +19,25 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public void registerUser(String username, String password) {
+    public void registerUser(String username, String password, String email) {
         String encodedPassword = passwordEncoder.encode(password);
+        String activationToken = java.util.UUID.randomUUID().toString();
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(encodedPassword);
+        user.setEmail(email);
+        user.setActivationtoken(activationToken);
+        user.setActivated(false);
+
         userRepository.save(user);
+
+        emailService.sendActivationEmail(user.getEmail(), activationToken);
     }
 
     public boolean authenticate(String username, String password) {
@@ -49,5 +61,26 @@ public class UserService implements UserDetailsService {
         builder.password(user.getPassword());
         builder.roles("USER");
         return builder.build();
+    }
+
+    public Optional<User> findByActivationToken(String token) {
+        return userRepository.findByActivationtoken(token);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    public boolean isUsernameTaken(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean isEmailTaken(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

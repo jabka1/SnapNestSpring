@@ -7,18 +7,38 @@
 <body>
 <h1>Register</h1>
 <form action="/register" method="post">
-    <label>Username:</label>
-    <input type="text" name="username" required>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
     <br>
-    <label>Password:</label>
-    <input type="password" name="password" required>
+    <small style="color: #555;">Username must be unique.</small>
+    <br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <br>
+    <small style="color: #555;">Please enter a valid email address (e.g., user@example.com).</small>
+    <br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <small style="color: #555;">
+        Password must meet the following criteria:
+        <ul>
+            <li>Minimum 8 characters</li>
+            <li>At least one uppercase letter</li>
+            <li>At least one number</li>
+            <li>At least one special character (e.g., !, @, #)</li>
+        </ul>
+    </small>
     <br>
 
     <div class="g-recaptcha" th:attr="data-sitekey=${recaptchaSiteKey}"></div>
-
     <br>
     <button type="submit">Register</button>
 </form>
+
 <span style="color: red;" th:text="${error}"></span>
 </body>
 </html>
+

@@ -5,6 +5,8 @@
 </head>
 <body>
 <h1>Welcome!</h1>
+<h2>Your account status:</h2>
+<p th:text="${user.activated ? 'Activated' : 'Not Activated! Check your email'}"></p>
 <form action="/logout" method="post" style="display: inline;">
     <button type="submit">Logout</button>
 </form>
