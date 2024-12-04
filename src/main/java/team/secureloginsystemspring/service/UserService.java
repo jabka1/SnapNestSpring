@@ -43,7 +43,28 @@ public class UserService implements UserDetailsService {
     public boolean authenticate(String username, String password) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isPresent()) {
-            return passwordEncoder.matches(password, userOpt.get().getPassword());
+            User user = userOpt.get();
+
+            if (user.getLockTime() > System.currentTimeMillis()) {
+                return false;
+            }
+
+            boolean isPasswordValid = passwordEncoder.matches(password, user.getPassword());
+
+            if (!isPasswordValid) {
+                user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+                if (user.getFailedLoginAttempts() >= 3) {
+                    user.setLockTime(System.currentTimeMillis() + 60000);
+                }
+
+                userRepository.save(user);
+            } else {
+                user.setFailedLoginAttempts(0);
+                user.setLockTime(0);
+                userRepository.save(user);
+            }
+
+            return isPasswordValid;
         }
         return false;
     }
