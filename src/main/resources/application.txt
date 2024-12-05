@@ -18,3 +18,5 @@ spring.mail.username=YOUR_EMAIL
 spring.mail.password=YOUR_EMAIL_PASSWORD
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
+
+logging.level.team.secureloginsystemspring=DEBUG
