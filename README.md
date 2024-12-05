@@ -5,13 +5,11 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 ## Features
 - User registration and authentication
 - Password hashing using BCrypt
-- Role-based access control
 - Account activation via email
-- Logout functionality
-- Custom login and registration pages
 - Security with Spring Security
 - Google reCAPTCHA integration for registration
 - Input validation with regular expressions for username, email, and password inputs
+- Failed login attempt tracking
 
 ## Prerequisites
 - Java 17 or higher
