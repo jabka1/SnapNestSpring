@@ -25,42 +25,42 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws BadCredentialsException {
+    public Authentication authenticate(Authentication authentication) {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
 
         Optional<User> userOpt = userRepository.findByUsername(username);
 
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-
-            if (user.getLockTime() > System.currentTimeMillis()) {
-                long remainingLockTime = (user.getLockTime() - System.currentTimeMillis()) / 1000;
-                throw new LockedException("Account \"" + username + "\" is locked. Try again in " + remainingLockTime + " seconds.");
-            }
-
-            boolean isPasswordValid = passwordEncoder.matches(password, user.getPassword());
-
-            if (!isPasswordValid) {
-                user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-
-                if (user.getFailedLoginAttempts() >= 3) {
-                    user.setLockTime(System.currentTimeMillis() + 60000);
-                    userRepository.save(user);
-                    throw new LockedException("Account \"" + username + "\" is locked. Try again in 60 seconds.");
-                }
-
-                userRepository.save(user);
-                throw new BadCredentialsException("Invalid credentials");
-            } else {
-                user.setFailedLoginAttempts(0);
-                user.setLockTime(0);
-                userRepository.save(user);
-                return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
-            }
-        } else {
-            throw new UsernameNotFoundException("User not found");
+        if (!userOpt.isPresent()) {
+            throw new BadCredentialsException("User not found!");
         }
+
+        User user = userOpt.get();
+
+        if (user.getLockTime() > System.currentTimeMillis()) {
+            long remainingLockTime = (user.getLockTime() - System.currentTimeMillis()) / 1000;
+            throw new LockedException("Account \"" + username + "\" is locked. Try again in " + remainingLockTime + " seconds.");
+        }
+
+        boolean isPasswordValid = passwordEncoder.matches(password, user.getPassword());
+
+        if (!isPasswordValid) {
+            user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+
+            if (user.getFailedLoginAttempts() >= 3) {
+                user.setLockTime(System.currentTimeMillis() + 60000);
+                userRepository.save(user);
+                throw new LockedException("Account \"" + username + "\" is locked. Try again in 60 seconds.");
+            }
+
+            userRepository.save(user);
+            throw new BadCredentialsException("Invalid credentials");
+        }
+
+        user.setFailedLoginAttempts(0);
+        user.setLockTime(0);
+        userRepository.save(user);
+        return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
     }
 
     @Override

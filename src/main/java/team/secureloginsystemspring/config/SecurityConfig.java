@@ -3,6 +3,7 @@ package team.secureloginsystemspring.config;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,9 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import team.secureloginsystemspring.service.CustomAuthenticationProvider;
+import team.secureloginsystemspring.service.UserService;
 
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -58,7 +63,9 @@ public class SecurityConfig {
             if (exception instanceof LockedException) {
                 request.getSession().setAttribute("error", exception.getMessage());
             } else if (exception instanceof BadCredentialsException) {
-                request.getSession().setAttribute("error", "Invalid username or password! from config  ");
+                String errorMessage = exception.getMessage();
+                if ("User not found!".equals(errorMessage)) { request.getSession().setAttribute("error", "User not found! Please check your username."); }
+                else { request.getSession().setAttribute("error", "Invalid username or password."); }
             }
             response.sendRedirect("/login?error=true");
         };
@@ -66,9 +73,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
-            response.sendRedirect("/home");
-        };
+        return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> { response.sendRedirect("/home"); };
     }
 }
 
