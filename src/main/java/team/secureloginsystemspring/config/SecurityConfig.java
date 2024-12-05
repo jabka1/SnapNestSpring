@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
@@ -52,7 +54,14 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler("/login?error=true");
+        return (request, response, exception) -> {
+            if (exception instanceof LockedException) {
+                request.getSession().setAttribute("error", exception.getMessage());
+            } else if (exception instanceof BadCredentialsException) {
+                request.getSession().setAttribute("error", "Invalid username or password! from config  ");
+            }
+            response.sendRedirect("/login?error=true");
+        };
     }
 
     @Bean

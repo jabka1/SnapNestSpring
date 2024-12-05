@@ -84,11 +84,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, Model model) {
-
-        if(!userService.authenticate(username, password)) {
-            model.addAttribute("error", "Invalid username or password!");
-            return "login";
-        }
+        if(!userService.authenticate(username, password)) { return "login"; }
         else { return "redirect:/home"; }
     }
 

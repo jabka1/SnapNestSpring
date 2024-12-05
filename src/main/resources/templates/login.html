@@ -14,7 +14,7 @@
     <button type="submit">Login</button>
 </form>
 <div>
-    <span style="color: red;" th:if="${param.error}" th:text="'Invalid username or password!'"></span>
+    <span style="color: red;" th:if="${session.error}" th:text="${session.error}"></span>
 </div>
 </body>
 </html>

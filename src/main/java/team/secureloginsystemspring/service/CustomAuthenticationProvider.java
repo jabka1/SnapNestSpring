@@ -3,6 +3,7 @@ package team.secureloginsystemspring.service;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +35,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             User user = userOpt.get();
 
             if (user.getLockTime() > System.currentTimeMillis()) {
-                throw new BadCredentialsException("User account is locked");
+                long remainingLockTime = (user.getLockTime() - System.currentTimeMillis()) / 1000;
+                throw new LockedException("Account \"" + username + "\" is locked. Try again in " + remainingLockTime + " seconds.");
             }
 
             boolean isPasswordValid = passwordEncoder.matches(password, user.getPassword());
@@ -44,10 +46,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 if (user.getFailedLoginAttempts() >= 3) {
                     user.setLockTime(System.currentTimeMillis() + 60000);
+                    userRepository.save(user);
+                    throw new LockedException("Account \"" + username + "\" is locked. Try again in 60 seconds.");
                 }
 
                 userRepository.save(user);
-
                 throw new BadCredentialsException("Invalid credentials");
             } else {
                 user.setFailedLoginAttempts(0);
