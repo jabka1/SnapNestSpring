@@ -13,11 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import team.secureloginsystemspring.model.User;
 import team.secureloginsystemspring.service.CustomAuthenticationProvider;
+import team.secureloginsystemspring.service.EmailService;
 import team.secureloginsystemspring.service.UserService;
 
 @Configuration
@@ -25,6 +26,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -73,7 +77,22 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> { response.sendRedirect("/home"); };
+        return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
+            String username = authentication.getName();
+            User user = userService.getCurrentUser(username);
+
+            if (user.isTwoFactorEnabled()) {
+                String twoFactorCode = userService.generateTwoFactorCode();
+                user.setTwoFactorCode(twoFactorCode);
+                userService.save(user);
+
+                emailService.sendTwoFactorCode(user.getEmail(), twoFactorCode);
+
+                response.sendRedirect("/2fa");
+            } else {
+                response.sendRedirect("/home");
+            }
+        };
     }
 }
 

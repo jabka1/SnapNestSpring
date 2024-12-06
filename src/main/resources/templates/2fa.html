@@ -1,0 +1,6 @@
+<h2>Enter your 2FA Code</h2>
+<form method="post" action="/2fa">
+    <input type="text" name="code" required/>
+    <button type="submit">Verify</button>
+</form>
+<div th:if="${error}" style="color: red;" th:text="${error}"></div>

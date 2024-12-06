@@ -38,29 +38,15 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private long lockTime = 0;
 
+    @Column(nullable = false)
+    private boolean twoFactorEnabled = false;
+
+    @Column(nullable = true)
+    private String twoFactorCode;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return lockTime <= System.currentTimeMillis();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return activated;
     }
 }

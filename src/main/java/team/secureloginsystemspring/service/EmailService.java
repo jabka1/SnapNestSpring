@@ -35,4 +35,21 @@ public class EmailService {
         }
     }
 
+    public void sendTwoFactorCode(String toEmail, String twoFactorCode) {
+        String subject = "Your 2FA Code";
+        String message = "Your 2FA code is: " + twoFactorCode;
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(fromEmail);
+        mailMessage.setTo(toEmail);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+
+        try {
+            mailSender.send(mailMessage);
+            System.out.println("2FA email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
+    }
 }

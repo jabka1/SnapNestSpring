@@ -1,5 +1,6 @@
 package team.secureloginsystemspring.service;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,7 +41,7 @@ public class UserService implements UserDetailsService {
         emailService.sendActivationEmail(user.getEmail(), activationToken);
     }
 
-    public boolean authenticate(String username, String password) {
+    /*public boolean authenticate(String username, String password) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -67,6 +68,21 @@ public class UserService implements UserDetailsService {
             return isPasswordValid;
         }
         return false;
+    }*/
+
+    public void enableTwoFactorAuthentication(User user) {
+        user.setTwoFactorEnabled(true);
+        userRepository.save(user);
+    }
+
+    public void disableTwoFactorAuthentication(User user) {
+        user.setTwoFactorEnabled(false);
+        user.setTwoFactorCode(null);
+        userRepository.save(user);
+    }
+
+    public String generateTwoFactorCode() {
+        return RandomStringUtils.randomNumeric(6);
     }
 
     @Override
@@ -95,6 +111,11 @@ public class UserService implements UserDetailsService {
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    public User getCurrentUser(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
     public boolean isUsernameTaken(String username) {

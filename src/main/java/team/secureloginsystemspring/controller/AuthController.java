@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import team.secureloginsystemspring.service.EmailService;
 
 import java.util.Optional;
 
@@ -26,6 +27,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
@@ -78,21 +82,62 @@ public class AuthController {
         }
     }
 
-
     @GetMapping("/login")
     public String showLoginPage() { return "login"; }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, Model model) {
-        if(!userService.authenticate(username, password)) { return "login"; }
-        else { return "redirect:/home"; }
-    }
+        User user = userService.getCurrentUser();
+        if (!userService.authenticate(username, password)) {
+            return "login";
+        }
+
+        if (user.isTwoFactorEnabled()) {
+            String twoFactorCode = userService.generateTwoFactorCode();
+            user.setTwoFactorCode(twoFactorCode);
+            userService.save(user);
+            emailService.sendTwoFactorCode(user.getEmail(), twoFactorCode);
+            return "redirect:/2fa";
+        } else {
+            return "redirect:/home";
+        }
+    }*/
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
         User user = userService.getCurrentUser();
         model.addAttribute("user", user);
         return "home";
+    }
+
+    @GetMapping("/2fa")
+    public String show2faPage() {
+        return "2fa";
+    }
+
+    @PostMapping("/2fa")
+    public String verify2faCode(@RequestParam String code, Model model) {
+        User user = userService.getCurrentUser();
+        if (user.getTwoFactorCode().equals(code)) {
+            return "redirect:/home";
+        } else {
+            model.addAttribute("error", "Invalid 2FA code");
+            return "2fa";
+        }
+    }
+
+    @PostMapping("/2fa/enable")
+    public String enableTwoFactor() {
+        User user = userService.getCurrentUser();
+        userService.enableTwoFactorAuthentication(user);
+        return "redirect:/home";
+    }
+
+    @PostMapping("/2fa/disable")
+    public String disableTwoFactor() {
+        User user = userService.getCurrentUser();
+        userService.disableTwoFactorAuthentication(user);
+        return "redirect:/home";
     }
 
     private boolean verifyRecaptcha(String gRecaptchaResponse) {
