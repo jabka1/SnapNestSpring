@@ -119,6 +119,8 @@ public class AuthController {
     public String verify2faCode(@RequestParam String code, Model model) {
         User user = userService.getCurrentUser();
         if (user.getTwoFactorCode().equals(code)) {
+            user.setTwoFactorCode(null);
+            userService.save(user);
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Invalid 2FA code");

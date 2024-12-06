@@ -16,10 +16,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import team.secureloginsystemspring.model.User;
-import team.secureloginsystemspring.service.CustomAuthenticationProvider;
-import team.secureloginsystemspring.service.EmailService;
-import team.secureloginsystemspring.service.UserService;
+import team.secureloginsystemspring.service.*;
 
 @Configuration
 public class SecurityConfig {
@@ -29,6 +28,12 @@ public class SecurityConfig {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private TwoFactorAuthenticationFilter twoFactorAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,7 +54,16 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
                 );
+
+        http.addFilterBefore(twoFactorAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
