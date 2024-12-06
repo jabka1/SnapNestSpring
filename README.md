@@ -10,6 +10,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - Google reCAPTCHA integration for registration
 - Input validation with regular expressions for username, email, and password inputs
 - Failed login attempt tracking
+- Two-Factor Authentication (2FA)
 
 ## Prerequisites
 - Java 17 or higher
@@ -28,6 +29,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - BCrypt: Password hashing
 - Google reCAPTCHA: Protection against bots
 - JavaMailSender: Email service for account activation
+- Jakarta Servlet API: For custom authentication handlers
 
 ## Installation
 
