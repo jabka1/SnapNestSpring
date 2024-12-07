@@ -11,6 +11,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - Input validation with regular expressions for username, email, and password inputs
 - Failed login attempt tracking
 - Two-Factor Authentication (2FA)
+- Google Login Integration (OAuth2)
 
 ## Prerequisites
 - Java 17 or higher
@@ -19,6 +20,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - A MySQL database named `secure_login_system`
 - A Google reCAPTCHA API key (site key and secret key)
 - An email service for sending activation links (SMTP configuration)
+- A Google Cloud Platform project with OAuth2 credentials for Google Login
 
 ## Technologies Used
 - Spring Boot: Backend framework
@@ -30,6 +32,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - Google reCAPTCHA: Protection against bots
 - JavaMailSender: Email service for account activation
 - Jakarta Servlet API: For custom authentication handlers
+- Google OAuth2: For Google Login integration
 
 ## Installation
 
@@ -73,19 +76,30 @@ spring.mail.password=YOUR_EMAIL_PASSWORD
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 ```
-### 6. Build the Project
+
+### 6. Configure Google OAuth2 Login
+To enable Google login, you need to set up OAuth2 credentials on the Google Cloud Platform:
+
+- Create a new project in the Google Cloud Platform.
+- Go to "APIs & Services" > "Credentials".
+- Click "Create Credentials" and select "OAuth 2.0 Client IDs".
+- Add your authorized redirect URI (http://localhost:8080/login/oauth2/code/google).
+- After creating your OAuth2 credentials, note down your Client ID and Client Secret.
+- Replace YOUR_CLIENT_ID and YOUR_CLIENT_SECRET with your Google Cloud Platform credentials in the application.properties file.
+
+### 7. Build the Project
 Use Maven to build the project:
 ```bash
 mvn clean install
 ```
 
-### 7. Run the Application
+### 8. Run the Application
 Run the application using:
 ```bash
 mvn spring-boot:run
 ```
 
-### 8. Access the Application
+### 9. Access the Application
 Open your browser and navigate to:
 ```bash
 http://localhost:8080

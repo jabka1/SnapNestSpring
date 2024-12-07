@@ -5,11 +5,16 @@
 </head>
 <body>
 <h1>Welcome!</h1>
+
 <h2>Your account status:</h2>
 <p th:text="${user.activated ? 'Activated' : 'Not Activated! Check your email'}"></p>
 
 <h3>Two-Factor Authentication Status:</h3>
 <p th:text="${user.twoFactorEnabled ? 'Two-Factor Authentication is Enabled' : 'Two-Factor Authentication is Disabled'}"></p>
+
+<h3>User Information:</h3>
+<p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+<p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
 
 <form action="#" th:action="@{/2fa/enable}" method="post" th:if="${!user.twoFactorEnabled}">
     <button type="submit">Enable 2FA</button>
