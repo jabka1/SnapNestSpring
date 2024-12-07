@@ -42,7 +42,7 @@ public class AuthController {
                            @RequestParam String email, @RequestParam("g-recaptcha-response") String gRecaptchaResponse,
                            Model model) {
         model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
-        if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$")) {
+        if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]).{8,}$")) {
             model.addAttribute("error", "Password must meet the security policy (Minimum 8 characters, including a capital letter, a number and a symbol (!, @, #))");
             return "register";
         }
@@ -140,6 +140,29 @@ public class AuthController {
         User user = userService.getCurrentUser();
         userService.disableTwoFactorAuthentication(user);
         return "redirect:/home";
+    }
+
+    @GetMapping("/changeProfileInfo")
+    public String showChangeProfilePage(Model model) {
+        User currentUser = userService.getCurrentUser();
+        model.addAttribute("user", currentUser);
+        return "changeProfileInfo";
+    }
+
+    @PostMapping("/changeProfileInfo")
+    public String changeProfileInfo(@RequestParam String username,
+                                    @RequestParam String password,
+                                    @RequestParam String confirmPassword,
+                                    Model model) {
+        try {
+            userService.updateUserProfile(username, password, confirmPassword);
+            return "redirect:/home";
+        } catch (IllegalArgumentException e) {
+            User currentUser = userService.getCurrentUser();
+            model.addAttribute("user", currentUser);
+            model.addAttribute("error", e.getMessage());
+            return "changeProfileInfo";
+        }
     }
 
     private boolean verifyRecaptcha(String gRecaptchaResponse) {

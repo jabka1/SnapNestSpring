@@ -1,6 +1,8 @@
 package team.secureloginsystemspring.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,6 +41,40 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         emailService.sendActivationEmail(user.getEmail(), activationToken);
+    }
+
+    public void updateUserProfile(String username, String newPassword, String confirmPassword) {
+        User currentUser = getCurrentUser();
+
+        if (!username.equals(currentUser.getUsername())) {
+            if (isUsernameTaken(username)) {
+                throw new IllegalArgumentException("Username is already taken.");
+            }
+            currentUser.setUsername(username);
+        }
+
+        if (newPassword != null && !newPassword.isEmpty()) {
+            if (confirmPassword == null || confirmPassword.isEmpty()) {
+                throw new IllegalArgumentException("Please confirm your new password.");
+            }
+
+            if (!newPassword.equals(confirmPassword)) {
+                throw new IllegalArgumentException("Passwords do not match.");
+            }
+
+            if (!newPassword.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]).{8,}$")) {
+                throw new IllegalArgumentException("Password must meet the security policy (Minimum 8 characters, including a capital letter, a number and a symbol (!, @, #))");
+            }
+
+            currentUser.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        userRepository.save(currentUser);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(currentUser, null,
+                        AuthorityUtils.createAuthorityList("USER"))
+        );
     }
 
     /*public boolean authenticate(String username, String password) {
