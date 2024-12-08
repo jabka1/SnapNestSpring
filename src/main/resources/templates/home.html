@@ -1,6 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .btn-link-custom {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+        }
+        .btn-link-custom:hover {
+            background-color: #218838;
+        }
+        .navbar-right {
+            margin-left: auto;
+        }
+        hr.border-muted {
+            border-top: 2px solid #ddd;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" >SecureLoginSystem</a>
+        <div class="navbar-right">
+            <div>
+                <a href="/logout" class="btn btn-link header-link">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="text-center mb-4">Welcome!</h2>
+
+    <h3>User Information:</h3>
+    <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+    <hr class="border-muted" />
+
+    <h3>Your account status:</h3>
+    <p th:text="${user.activated ? 'Activated' : 'Not Activated! Check your email'}"></p>
+    <hr class="border-muted" />
+
+    <h3>Two-Factor Authentication Status:</h3>
+    <p th:text="${user.twoFactorEnabled ? 'Two-Factor Authentication is Enabled' : 'Two-Factor Authentication is Disabled'}"></p>
+    <div class="text-center">
+        <form action="#" th:action="@{/2fa/enable}" method="post" th:if="${!user.twoFactorEnabled}">
+            <button type="submit" class="btn btn-custom">Enable 2FA</button>
+        </form>
+        <form action="#" th:action="@{/2fa/disable}" method="post" th:if="${user.twoFactorEnabled}">
+            <button type="submit" class="btn btn-custom">Disable 2FA</button>
+        </form>
+        <hr class="border-muted" />
+        <br>
+        <a href="/changeProfileInfo" class="btn btn-link-custom">Change Profile Information</a>
+        <br>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <title>Welcome</title>
 </head>
 <body>
@@ -30,3 +121,4 @@
 </form>
 </body>
 </html>
+-->
