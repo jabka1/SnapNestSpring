@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -119,6 +121,38 @@ public class UserService implements UserDetailsService {
 
     public String generateTwoFactorCode() {
         return RandomStringUtils.randomNumeric(6);
+    }
+
+    public String generatePasswordRecoveryToken(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String token = UUID.randomUUID().toString();
+        user.setRecoveryToken(token);
+        user.setTokenExpiryTime(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+        return token;
+    }
+
+    public void resetPasswordWithToken(String token, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match.");
+        }
+
+        User user = userRepository.findByRecoveryToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid token."));
+
+        if (user.getTokenExpiryTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Token has expired.");
+        }
+
+        if (!newPassword.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]).{8,}$")) {
+            throw new IllegalArgumentException("Password must meet the security policy (Minimum 8 characters, including a capital letter, a number and a symbol (!, @, #))");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setRecoveryToken(null);
+        user.setTokenExpiryTime(null);
+        userRepository.save(user);
     }
 
     @Override

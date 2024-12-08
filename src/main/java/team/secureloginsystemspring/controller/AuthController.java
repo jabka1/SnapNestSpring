@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.client.RestTemplate;
 import team.secureloginsystemspring.model.User;
 import team.secureloginsystemspring.service.UserService;
@@ -162,6 +163,40 @@ public class AuthController {
             model.addAttribute("user", currentUser);
             model.addAttribute("error", e.getMessage());
             return "changeProfileInfo";
+        }
+    }
+
+    @GetMapping("/generateTokenForPasswordRecovery")
+    public String showForgotPasswordPage() {
+        return "generateTokenForPasswordRecovery";
+    }
+
+    @PostMapping("/generateTokenForPasswordRecovery")
+    public String generateRecoveryToken(@RequestParam String username, Model model) {
+        try {
+            String token = userService.generatePasswordRecoveryToken(username);
+            emailService.sendPasswordRecoveryEmail(username, token);
+            return "passwordRecovery";
+        } catch (UsernameNotFoundException e) {
+            model.addAttribute("error", "Username not found!");
+            return "generateTokenForPasswordRecovery";
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred while sending the recovery email.");
+            return "generateTokenForPasswordRecovery";
+        }
+    }
+
+    @PostMapping("/passwordRecovery")
+    public String resetPassword(@RequestParam String token,
+                                @RequestParam String password,
+                                @RequestParam String confirmPassword,
+                                Model model) {
+        try {
+            userService.resetPasswordWithToken(token, password, confirmPassword);
+            return "redirect:/login";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "passwordRecovery";
         }
     }
 

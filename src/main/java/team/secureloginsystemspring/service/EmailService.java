@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import team.secureloginsystemspring.model.User;
+import team.secureloginsystemspring.repository.UserRepository;
 
 
 @Service
@@ -12,6 +15,9 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -51,5 +57,16 @@ public class EmailService {
         } catch (Exception e) {
             System.err.println("Error sending email: " + e.getMessage());
         }
+    }
+
+    public void sendPasswordRecoveryEmail(String username, String token) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String emailContent = "Use this token to reset your password: " + token;
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Password Recovery");
+        message.setText(emailContent);
+        mailSender.send(message);
     }
 }

@@ -16,6 +16,12 @@
 <a href="/oauth2/authorization/google">
     <button>Sign in with Google</button>
 </a>
+
+<form th:action="@{/generateTokenForPasswordRecovery}" method="get">
+    <button type="submit">Forgot Password?</button>
+</form>
+
+
 <div>
     <span style="color: red;" th:if="${session.error}" th:text="${session.error}"></span>
 </div>
