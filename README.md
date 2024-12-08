@@ -13,6 +13,7 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - Two-Factor Authentication (2FA)
 - Google Login Integration (OAuth2)
 - Password Change Functionality
+- Password recovery using a temporarily generated token
 
 ## Prerequisites
 - Java 17 or higher
