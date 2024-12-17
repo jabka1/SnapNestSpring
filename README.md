@@ -37,8 +37,6 @@ A simple secure login system implemented with Spring Boot, Spring Security, and 
 - Google OAuth2: For Google Login integration
 - Bootstrap
 
-<br>
-
 ## Installation
 
 ### 1. Clone the repository
@@ -110,50 +108,31 @@ Open your browser and navigate to:
 http://localhost:8080
 ```
 
-
-<br>
-
-
 ## Screenshots
 
 ### 1. Login
 ![Login Screenshot](demonstration/login.png)
 
-<br>
-
 ### 2. Registration
 ![Login Screenshot](demonstration/registration.png)
-
-<br>
 
 ### 3. Home
 ![Login Screenshot](demonstration/home.png)
 
-<br>
-
 ### 4. Change profile information
 ![Login Screenshot](demonstration/ChangeProfileInfo.png)
 
-<br>
-
 ### 5. Two-Factor authentication (2FA)
 ![Login Screenshot](demonstration/2fa.png)
-
-<br>
 
 ### 6. Password recovery
 ##### 1. Generate a password recovery token
 ![Login Screenshot](demonstration/GenTokenForRecoveryPass.png)
 
-<br>
-
 ##### 2. Enter token and new password
 ![Login Screenshot](demonstration/PasswordRecovery.png)
-
-<br>
 
 ### 7. Page after account activation
 ![Login Screenshot](demonstration/Activation.png)
 
-<br>
 <br>
