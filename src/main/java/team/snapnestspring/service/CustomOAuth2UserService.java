@@ -1,4 +1,4 @@
-package team.secureloginsystemspring.service;
+package team.snapnestspring.service;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,8 +9,8 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
-import team.secureloginsystemspring.model.User;
-import team.secureloginsystemspring.repository.UserRepository;
+import team.snapnestspring.model.User;
+import team.snapnestspring.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.HashMap;

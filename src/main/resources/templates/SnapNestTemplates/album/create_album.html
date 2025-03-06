@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create an album</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Create an album</h1>
+
+    <form th:action="@{/createAlbum}" method="post">
+        <input type="hidden" name="parentAlbumId" th:value="${parentAlbumId}">
+
+        <label for="albumName">New album title:</label>
+        <input type="text" id="albumName" name="albumName" required>
+
+        <button type="submit">Create</button>
+    </form>
+
+    <h3><a href="/albums" >Back to main album</a></h3>
+</div>
+
+</body>
+</html>

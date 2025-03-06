@@ -1,4 +1,4 @@
-package team.secureloginsystemspring.model;
+package team.snapnestspring.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-
 
 @Entity
 @Data
@@ -44,13 +43,11 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String twoFactorCode;
 
-
     @Column(nullable = true)
     private String recoveryToken;
 
     @Column(nullable = true)
     private java.time.LocalDateTime tokenExpiryTime;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,4 +1,4 @@
-package team.secureloginsystemspring.config;
+package team.snapnestspring.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +17,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import team.secureloginsystemspring.model.User;
-import team.secureloginsystemspring.service.*;
+import team.snapnestspring.model.User;
+import team.snapnestspring.service.*;
 
 @Configuration
 public class SecurityConfig {
@@ -40,7 +40,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/register", "/login", "/activate", "/css/**", "/generateTokenForPasswordRecovery", "/passwordRecovery", "/js/**").permitAll()
+                        .requestMatchers("/register", "/login", "/activate", "/css/**", "/generateTokenForPasswordRecovery", "/passwordRecovery", "/js/**", "shared/photo/**", "shared/album/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

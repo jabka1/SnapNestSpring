@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Photo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .share-section {
+            margin-top: 20px;
+        }
+        .share-section button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .share-section button.enabled {
+            background-color: #007BFF;
+            color: white;
+        }
+        .share-section button.enabled:hover {
+            background-color: #0056b3;
+        }
+        .share-section button.disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .share-section input {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            width: 60%;
+        }
+        .copied-message {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+            display: none;
+        }
+        .photo-status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+        }
+        .enabled {
+            background-color: #007BFF;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>View Photo</h1>
+
+    <img th:src="${photo.url}" alt="Фото" />
+    <p th:text="'Photo: ' + ${photo.name}"></p>
+
+    <p class="photo-status" th:text="${isPublic} ? 'Status: Public' : 'Status: Private'"></p>
+
+    <div class="share-section">
+        <button id="shareButton"
+                th:classappend="${isPublic} ? 'enabled' : 'disabled'">Share</button>
+
+        <input type="text" id="photoUrl" th:value="${sharedUrl}" readonly />
+        <span id="copiedMessage" class="copied-message" style="display: none;">In the clipboard</span>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var shareButton = document.getElementById("shareButton");
+        var urlInput = document.getElementById("photoUrl");
+
+        shareButton.addEventListener("click", function () {
+            if (shareButton.classList.contains("disabled")) {
+                return;
+            }
+            navigator.clipboard.writeText(urlInput.value).then(function () {
+                var copiedMessage = document.getElementById("copiedMessage");
+                copiedMessage.style.display = "inline-block";
+                setTimeout(function () {
+                    copiedMessage.style.display = "none";
+                }, 2000);
+            }).catch(function (err) {
+                console.error('Could not copy text: ', err);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

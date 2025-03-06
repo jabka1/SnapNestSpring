@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared album</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Album: <span th:text="${album.name}"></span></h1>
+    <h3>Owner: <span th:text="${owner}"></span></h3>
+
+    <h2>Photos in the album</h2>
+    <div class="photo-gallery">
+        <div th:each="photo : ${photos}" class="photo-item">
+            <a href="#" class="photo-link" th:data-photo-id="${photo.id}">
+                <img th:src="${photo.url}" alt="Photo" width="150">
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.photo-link').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                var photoId = link.getAttribute('data-photo-id');
+                var encodedId = encodeURIComponent(btoa(photoId));
+                var photoUrl = '/shared/photo/' + encodedId;
+                window.location.href = photoUrl;
+            });
+        });
+    });
+
+</script>
+
+</body>
+</html>

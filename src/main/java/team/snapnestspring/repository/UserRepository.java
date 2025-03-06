@@ -1,6 +1,6 @@
-package team.secureloginsystemspring.repository;
+package team.snapnestspring.repository;
 
-import team.secureloginsystemspring.model.User;
+import team.snapnestspring.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albums and Photos</title>
+    <style>
+        .share-section button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .share-section button.enabled {
+            background-color: #007BFF;
+            color: white;
+        }
+        .share-section button.enabled:hover {
+            background-color: #0056b3;
+        }
+        .share-section button.disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .share-section input {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            width: 60%;
+        }
+        .copied-message {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 th:text="${album != null ? album.name : 'Main album'}">Albums and Photos</h1>
+
+    <a th:href="@{/createAlbum(parentAlbumId=${album != null ? album.id : null})}">
+        <button>Create an album</button>
+    </a>
+
+    <form th:action="@{${uploadUrl}}" method="post" enctype="multipart/form-data">
+        <label for="file">Select a photo:</label>
+        <input type="file" name="file" id="file" required accept="image/*" />
+
+        <label for="isPublic">Public?</label>
+        <input type="checkbox" name="isPublic" id="isPublic" />
+
+        <button type="submit">Download</button>
+    </form>
+
+    <h2>Albums</h2>
+    <ul>
+        <li th:each="subAlbum : ${albums}">
+            <a th:href="@{/albums/{albumId}(albumId=${subAlbum.id})}" th:text="${subAlbum.name}">Album</a>
+        </li>
+    </ul>
+
+    <h2>Photos in this album</h2>
+    <ul>
+        <li th:each="photo : ${photos}">
+            <a th:href="@{/photo/{photoId}(photoId=${photo.id})}">
+                <img th:src="${photo.url}" alt="Photo" width="150">
+            </a>
+            <span th:if="${photo.isPublic}" style="color: green;">Public</span>
+            <span th:if="${!photo.isPublic}" style="color: red;">Private</span>
+        </li>
+    </ul>
+
+    <div class="share-section" th:if="${isOwner}">
+        <button id="shareAlbumButton" th:data-album-id="${album.id}" class="enabled">Share album</button>
+        <input type="text" id="albumUrl" th:value="${sharedUrl}" readonly />
+        <span id="albumCopiedMessage" class="copied-message">In the clipboard</span>
+    </div>
+    <h3 th:if="${rootAlbum != true}"><a href="/albums">Back to main album</a></h3>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var shareButton = document.getElementById("shareAlbumButton");
+        var urlInput = document.getElementById("albumUrl");
+
+        shareButton.addEventListener("click", function () {
+            if (shareButton.classList.contains("disabled")) {
+                return;
+            }
+            navigator.clipboard.writeText(urlInput.value).then(function () {
+                var copiedMessage = document.getElementById("albumCopiedMessage");
+                copiedMessage.style.display = "inline-block";
+                setTimeout(function () {
+                    copiedMessage.style.display = "none";
+                }, 2000);
+            }).catch(function (err) {
+                console.error('Не вдалося скопіювати текст: ', err);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

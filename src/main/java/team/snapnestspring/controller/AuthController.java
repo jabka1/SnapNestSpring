@@ -1,4 +1,4 @@
-package team.secureloginsystemspring.controller;
+package team.snapnestspring.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -7,13 +7,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.client.RestTemplate;
-import team.secureloginsystemspring.model.User;
-import team.secureloginsystemspring.service.UserService;
+import team.snapnestspring.model.User;
+import team.snapnestspring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import team.secureloginsystemspring.service.EmailService;
+import team.snapnestspring.service.EmailService;
 
 import java.util.Optional;
 
@@ -85,24 +85,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginPage() { return "login"; }
-
-    /*@PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model) {
-        User user = userService.getCurrentUser();
-        if (!userService.authenticate(username, password)) {
-            return "login";
-        }
-
-        if (user.isTwoFactorEnabled()) {
-            String twoFactorCode = userService.generateTwoFactorCode();
-            user.setTwoFactorCode(twoFactorCode);
-            userService.save(user);
-            emailService.sendTwoFactorCode(user.getEmail(), twoFactorCode);
-            return "redirect:/2fa";
-        } else {
-            return "redirect:/home";
-        }
-    }*/
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
