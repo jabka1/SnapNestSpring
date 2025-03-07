@@ -77,4 +77,44 @@ public class PhotoService {
         return s3Client.getUrl(bucketName, keyName).toString();
     }
 
+    @Transactional
+    public void deletePhoto(Long photoId, String username) {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+
+        if (!photo.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized action");
+        }
+        String key = photo.getUrl().substring(photo.getUrl().indexOf("photos/"));
+        s3Client.deleteObject(bucketName, key);
+        photoRepository.delete(photo);
+    }
+
+    @Transactional
+    public void editPhoto(Long photoId, String newName, boolean isPublic, String username) {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+        if (!photo.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized action");
+        }
+        photo.setName(newName);
+        photo.setPublic(isPublic);
+
+        photoRepository.save(photo);
+    }
+
+    @Transactional
+    public void deleteAlbum(Album album) {
+        for (Photo photo : album.getPhotos()) {
+            String key = photo.getUrl().substring(photo.getUrl().indexOf("photos/"));
+            s3Client.deleteObject(bucketName, key);
+            photoRepository.delete(photo);
+        }
+        for (Album subAlbum : album.getSubAlbums()) {
+            deleteAlbum(subAlbum);
+        }
+        albumRepository.delete(album);
+    }
+
+
 }

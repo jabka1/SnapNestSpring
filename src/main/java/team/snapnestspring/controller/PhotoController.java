@@ -222,4 +222,68 @@ public class PhotoController {
         }
     }
 
+    @PostMapping("/photo/{photoId}/delete")
+    public String deletePhoto(@PathVariable Long photoId, Principal principal) {
+        User user = userService.getCurrentUser();
+        photoService.deletePhoto(photoId, user.getUsername());
+        return "redirect:/albums";
+    }
+
+    @PostMapping("/photo/{photoId}/edit")
+    public String editPhoto(@PathVariable Long photoId,
+                            @RequestParam String newName,
+                            @RequestParam(name = "isPublic", defaultValue = "false") boolean isPublic,
+                            Principal principal) {
+        User user = userService.getCurrentUser();
+        photoService.editPhoto(photoId, newName, isPublic, user.getUsername());
+        return "redirect:/photo/" + photoId;
+    }
+
+    @GetMapping("/albums/{albumId}/edit")
+    public String editAlbum(@PathVariable Long albumId, Model model, Principal principal) {
+        User user = userService.getCurrentUser();
+        Optional<Album> albumOpt = albumRepository.findByIdAndUserId(albumId, user.getId());
+
+        if (albumOpt.isEmpty()) {
+            return "redirect:/albums";
+        }
+
+        Album album = albumOpt.get();
+        model.addAttribute("album", album);
+        return "SnapNestTemplates/album/edit_album";
+    }
+
+    @PostMapping("/albums/{albumId}/edit")
+    public String updateAlbum(@PathVariable Long albumId,
+                              @RequestParam String name,
+                              Principal principal) {
+        User user = userService.getCurrentUser();
+        Optional<Album> albumOpt = albumRepository.findByIdAndUserId(albumId, user.getId());
+
+        if (albumOpt.isEmpty()) {
+            return "redirect:/albums";
+        }
+
+        Album album = albumOpt.get();
+        album.setName(name);
+        albumRepository.save(album);
+
+        return "redirect:/albums/" + albumId;
+    }
+
+    @PostMapping("/albums/{albumId}/delete")
+    public String deleteAlbum(@PathVariable Long albumId, Principal principal) {
+        User user = userService.getCurrentUser();
+        Optional<Album> albumOpt = albumRepository.findByIdAndUserId(albumId, user.getId());
+
+        if (albumOpt.isEmpty()) {
+            return "redirect:/albums";
+        }
+
+        Album album = albumOpt.get();
+        photoService.deleteAlbum(album);
+
+        return "redirect:/albums";
+    }
+
 }

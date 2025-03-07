@@ -107,6 +107,21 @@
         <span id="copiedMessage" class="copied-message" style="display: none;">In the clipboard</span>
     </div>
 
+    <div class="edit-menu">
+        <button id="editToggle" class="edit-button">Edit Photo ▼</button>
+        <div id="editContent" class="edit-content" style="display: none;">
+            <form th:action="@{/photo/{photoId}/edit(photoId=${photo.id})}" method="post">
+                <label>New name: <input type="text" name="newName" th:value="${photo.name}"></label>
+                <label>Public: <input type="checkbox" name="isPublic" th:checked="${photo.isPublic}"></label>
+                <button type="submit">Edit</button>
+            </form>
+            <form th:action="@{/photo/{photoId}/delete(photoId=${photo.id})}" method="post" onsubmit="return confirm('Delete photo?');">
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 
 <script>
@@ -128,6 +143,15 @@
                 console.error('Could not copy text: ', err);
             });
         });
+    });
+
+    document.getElementById("editToggle").addEventListener("click", function() {
+        var content = document.getElementById("editContent");
+        if (content.style.display === "none") {
+            content.style.display = "block";
+        } else {
+            content.style.display = "none";
+        }
     });
 </script>
 

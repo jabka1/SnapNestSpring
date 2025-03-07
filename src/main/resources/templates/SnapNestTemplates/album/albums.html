@@ -76,6 +76,10 @@
         </li>
     </ul>
 
+    <a th:if="${isOwner}" th:href="@{/albums/{albumId}/edit(albumId=${album.id})}">
+        <button>Edit album</button>
+    </a>
+
     <div class="share-section" th:if="${isOwner}">
         <button id="shareAlbumButton" th:data-album-id="${album.id}" class="enabled">Share album</button>
         <input type="text" id="albumUrl" th:value="${sharedUrl}" readonly />

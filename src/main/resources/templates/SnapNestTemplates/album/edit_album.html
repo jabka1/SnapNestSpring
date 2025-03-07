@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редагування альбому</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit album</h1>
+    <form th:action="@{/albums/{albumId}/edit(albumId=${album.id})}" method="post">
+        <label for="name">Album name:</label>
+        <input type="text" id="name" name="name" th:value="${album.name}" required/>
+
+        <button type="submit">Edit</button>
+    </form>
+    <form th:action="@{/albums/{albumId}/delete(albumId=${album.id})}" method="post" onsubmit="return confirm('Delete album?');">
+        <button type="submit">Delete album</button>
+    </form>
+
+    <a th:href="@{/albums/{albumId}(albumId=${album.id})}">Back to main album</a>
+</div>
+
+</body>
+</html>
