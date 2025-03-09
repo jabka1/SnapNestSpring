@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,34 +80,6 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    /*public boolean authenticate(String username, String password) {
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-
-            if (user.getLockTime() > System.currentTimeMillis()) {
-                return false;
-            }
-
-            boolean isPasswordValid = passwordEncoder.matches(password, user.getPassword());
-
-            if (!isPasswordValid) {
-                user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-                if (user.getFailedLoginAttempts() >= 3) {
-                    user.setLockTime(System.currentTimeMillis() + 60000);
-                }
-
-                userRepository.save(user);
-            } else {
-                user.setFailedLoginAttempts(0);
-                user.setLockTime(0);
-                userRepository.save(user);
-            }
-
-            return isPasswordValid;
-        }
-        return false;
-    }*/
 
     public void enableTwoFactorAuthentication(User user) {
         user.setTwoFactorEnabled(true);
@@ -195,4 +168,9 @@ public class UserService implements UserDetailsService {
     public boolean isEmailTaken(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
 }

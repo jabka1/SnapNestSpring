@@ -1,0 +1,79 @@
+<form id="jointAlbumForm" action="/joint_albums/create" method="POST">
+    <label for="albumName">Album Name</label>
+    <input type="text" id="albumName" name="albumName" required><br>
+
+    <div id="userInputs">
+        <div class="user-input">
+            <input type="text" class="username" name="usernames" placeholder="Enter username" required>
+            <select name="roles">
+                <option value="READ_WRITE">Read & Write</option>
+                <option value="READ_ONLY">Read Only</option>
+            </select>
+            <button type="button" class="removeUserBtn">X</button>
+        </div>
+    </div>
+
+    <button type="button" id="addUserBtn">Add another user</button><br>
+
+    <button type="submit" id="createAlbumBtn" disabled>Create Joint Album</button>
+</form>
+
+<div id="errorMessage" style="color: red;"></div>
+
+<script>
+    document.getElementById("addUserBtn").addEventListener("click", function () {
+        let userInputs = document.getElementById("userInputs");
+        let div = document.createElement("div");
+        div.classList.add("user-input");
+        div.innerHTML = `
+            <input type="text" class="username" name="usernames" placeholder="Enter username" required>
+            <select name="roles">
+                <option value="READ_WRITE">Read & Write</option>
+                <option value="READ_ONLY">Read Only</option>
+            </select>
+            <button type="button" class="removeUserBtn">X</button>
+        `;
+        userInputs.appendChild(div);
+    });
+
+    document.getElementById("userInputs").addEventListener("click", function (event) {
+        if (event.target.classList.contains("removeUserBtn")) {
+            event.target.parentElement.remove();
+            checkUsernames();
+        }
+    });
+
+    document.getElementById("userInputs").addEventListener("input", function () {
+        checkUsernames();
+    });
+
+    function checkUsernames() {
+        let inputFields = document.querySelectorAll(".username");
+        let usernames = Array.from(inputFields).map(input => input.value.trim()).filter(name => name.length > 0);
+        let createButton = document.getElementById("createAlbumBtn");
+        let errorMessage = document.getElementById("errorMessage");
+
+        if (usernames.length === 0) {
+            createButton.disabled = true;
+            errorMessage.innerText = "";
+            return;
+        }
+
+        fetch('/joint_albums/check_users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(usernames)
+        })
+            .then(response => response.json())
+            .then(notFoundUsers => {
+                if (notFoundUsers.length > 0) {
+                    errorMessage.innerText = "Users not found: " + notFoundUsers.join(', ');
+                    createButton.disabled = true;
+                } else {
+                    errorMessage.innerText = "";
+                    createButton.disabled = false;
+                }
+            })
+            .catch(error => console.error('Error checking users:', error));
+    }
+</script>

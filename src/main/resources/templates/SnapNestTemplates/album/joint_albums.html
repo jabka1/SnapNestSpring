@@ -1,0 +1,6 @@
+<h1>Joint Albums</h1>
+<div th:each="album : ${jointAlbums}">
+    <p th:text="${album.name}"></p>
+    <p>Owner: <span th:text="${album.user.username}"></span></p>
+    <a th:href="@{/joint_albums/{albumId}(albumId=${album.id})}">View Album</a>
+</div>

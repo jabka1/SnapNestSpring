@@ -36,12 +36,12 @@ public class PhotoController {
     @GetMapping("/albums")
     public String showMainAlbum(Model model) {
         User user = userService.getCurrentUser();
-        List<Album> mainAlbums = albumRepository.findByUserIdAndParentAlbumIsNull(user.getId());
+        List<Album> mainAlbums = albumRepository.findByUserIdAndParentAlbumIsNullAndIsJointFalse(user.getId());
         List<Photo> photos = photoRepository.findByUserIdAndAlbumIsNull(user.getId());
 
         String uploadUrl = "/albums/upload";
 
-        model.addAttribute("rootAlbum",true);
+        model.addAttribute("rootAlbum", true);
         model.addAttribute("albums", mainAlbums);
         model.addAttribute("photos", photos);
         model.addAttribute("uploadUrl", uploadUrl);
@@ -51,7 +51,7 @@ public class PhotoController {
     @GetMapping("/albums/{albumId}")
     public String viewAlbum(@PathVariable Long albumId, Model model, Principal principal) {
         User user = userService.getCurrentUser();
-        Optional<Album> albumOpt = albumRepository.findByIdAndUserId(albumId, user.getId());
+        Optional<Album> albumOpt = albumRepository.findByIdAndUserIdAndIsJointFalse(albumId, user.getId());
 
         if (albumOpt.isEmpty()) {
             return "redirect:/albums";
@@ -78,6 +78,7 @@ public class PhotoController {
 
         return "SnapNestTemplates/album/albums";
     }
+
 
     @GetMapping("/shared/album/{encodedId}")
     public String sharedAlbum(@PathVariable String encodedId, Model model) {

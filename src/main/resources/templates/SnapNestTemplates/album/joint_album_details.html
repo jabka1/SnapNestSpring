@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Details</title>
+</head>
+<body>
+
+<h1 th:text="${album != null ? album.name : 'Album'}"></h1>
+
+<form th:if="${role == 'OWNER' || role == 'READ_WRITE'}"
+      th:action="@{/joint_albums/{albumId}/upload(albumId=${album.id})}"
+      method="post" enctype="multipart/form-data">
+    <label for="file">Select a photo:</label>
+    <input type="file" name="file" id="file" required accept="image/*" />
+    <button type="submit">Upload Photo</button>
+</form>
+
+<h2>Photos in this album</h2>
+<ul>
+    <li th:each="photo : ${photos}">
+        <a th:href="@{/photo/{photoId}(photoId=${photo.id})}">
+            <img th:src="@{${photo.url}}" alt="Photo" width="150">
+        </a>
+        <span th:if="${photo.isPublic}" style="color: green;">Public</span>
+        <span th:if="${!photo.isPublic}" style="color: red;">Private</span>
+    </li>
+</ul>
+
+<a href="/joint_albums">Back to Joint Albums</a>
+
+</body>
+</html>

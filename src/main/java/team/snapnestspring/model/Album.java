@@ -32,8 +32,19 @@ public class Album {
     @OneToMany(mappedBy = "parentAlbum", cascade = CascadeType.ALL)
     private List<Album> subAlbums = new ArrayList<>();
 
+    @Column
+    private boolean isJoint = false;
+
     public Album(String name, User user) {
         this.name = name;
         this.user = user;
+    }
+
+    public boolean isJoint() {
+        return isJoint;
+    }
+
+    public void setJoint(boolean isJoint) {
+        this.isJoint = isJoint;
     }
 }
