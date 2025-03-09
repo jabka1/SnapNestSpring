@@ -1,7 +1,15 @@
-<form id="jointAlbumForm" action="/joint_albums/create" method="POST">
-    <label for="albumName">Album Name</label>
-    <input type="text" id="albumName" name="albumName" required><br>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Users to Joint Album</title>
+</head>
+<body>
 
+<h1>Add Users to Album: <span th:text="${album.name}"></span></h1>
+
+<form id="addUserForm" th:action="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}" method="POST">
     <div id="userInputs">
         <div class="user-input">
             <input type="text" class="username" name="usernames" placeholder="Enter username" required>
@@ -15,7 +23,7 @@
 
     <button type="button" id="addUserBtn">Add another user</button><br>
 
-    <button type="submit" id="createAlbumBtn" disabled>Create Joint Album</button>
+    <button type="submit" id="addUsersBtn" disabled>Add Users</button>
 </form>
 
 <div id="errorMessage" style="color: red;"></div>
@@ -50,11 +58,11 @@
     function checkUsernames() {
         let inputFields = document.querySelectorAll(".username");
         let usernames = Array.from(inputFields).map(input => input.value.trim()).filter(name => name.length > 0);
-        let createButton = document.getElementById("createAlbumBtn");
+        let addButton = document.getElementById("addUsersBtn");
         let errorMessage = document.getElementById("errorMessage");
 
         if (usernames.length === 0) {
-            createButton.disabled = true;
+            addButton.disabled = true;
             errorMessage.innerText = "";
             return;
         }
@@ -69,14 +77,14 @@
                 if (Array.isArray(responseData)) {
                     if (responseData.length > 0) {
                         errorMessage.innerText = "Users not found: " + responseData.join(', ');
-                        createButton.disabled = true;
+                        addButton.disabled = true;
                     } else {
                         errorMessage.innerText = "";
-                        createButton.disabled = false;
+                        addButton.disabled = false;
                     }
                 } else {
                     errorMessage.innerText = responseData;
-                    createButton.disabled = true;
+                    addButton.disabled = true;
                 }
             })
             .catch(error => {
@@ -85,3 +93,6 @@
             });
     }
 </script>
+
+</body>
+</html>

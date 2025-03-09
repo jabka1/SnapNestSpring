@@ -131,6 +131,36 @@ public class PhotoService {
     }
 
     @Transactional
+    public void deletePhotoFromJointAlbum(Long albumId, Long photoId, String username) {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+
+        if (!photo.getAlbum().getId().equals(albumId)) {
+            throw new RuntimeException("Photo does not belong to the specified album");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<AlbumUserRole> albumUserRoleOpt = albumUserRoleRepository.findByAlbumIdAndUserId(albumId, user.getId());
+        if (albumUserRoleOpt.isEmpty()) {
+            throw new RuntimeException("User does not have a role in the album");
+        }
+
+        AlbumUserRole albumUserRole = albumUserRoleOpt.get();
+
+        if (albumUserRole.getRole() != AlbumUserRole.Role.OWNER && albumUserRole.getRole() != AlbumUserRole.Role.READ_WRITE) {
+            throw new RuntimeException("Unauthorized action");
+        }
+
+        String key = photo.getUrl().substring(photo.getUrl().indexOf("photos/"));
+        s3Client.deleteObject(bucketName, key);
+
+        photoRepository.delete(photo);
+    }
+
+
+    @Transactional
     public void editPhoto(Long photoId, String newName, boolean isPublic, String username) {
         Photo photo = photoRepository.findById(photoId)
                 .orElseThrow(() -> new RuntimeException("Photo not found"));
@@ -142,6 +172,34 @@ public class PhotoService {
 
         photoRepository.save(photo);
     }
+
+    @Transactional
+    public void editPhotoInJointAlbum(Long albumId, Long photoId, String newName, String username) {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+
+        if (!photo.getAlbum().getId().equals(albumId)) {
+            throw new RuntimeException("Photo does not belong to the specified album");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<AlbumUserRole> albumUserRoleOpt = albumUserRoleRepository.findByAlbumIdAndUserId(albumId, user.getId());
+        if (albumUserRoleOpt.isEmpty()) {
+            throw new RuntimeException("User does not have a role in the album");
+        }
+
+        AlbumUserRole albumUserRole = albumUserRoleOpt.get();
+
+        if (albumUserRole.getRole() != AlbumUserRole.Role.OWNER && albumUserRole.getRole() != AlbumUserRole.Role.READ_WRITE) {
+            throw new RuntimeException("Unauthorized action");
+        }
+
+        photo.setName(newName);
+        photoRepository.save(photo);
+    }
+
 
     @Transactional
     public void deleteAlbum(Album album) {

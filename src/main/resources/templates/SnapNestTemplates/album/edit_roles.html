@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Roles - Joint Album</title>
+</head>
+<body>
+<h1>Edit Roles for Album: <span th:text="${album.name}"></span></h1>
+
+<form th:action="@{/joint_albums/{albumId}/edit_roles(albumId=${album.id})}" method="POST">
+    <table>
+        <tr>
+            <th>User</th>
+            <th>Role</th>
+        </tr>
+        <tr th:each="role : ${albumUserRoles}">
+            <td th:text="${role.user.username}"></td>
+            <td>
+                <select th:name="'userRoles[' + ${role.user.id} + ']'" required>
+                    <option th:value="'READ_WRITE'" th:text="|Read & Write|"
+                            th:selected="${role.role.toString() == 'READ_WRITE'}"></option>
+                    <option th:value="'READ_ONLY'" th:text="|Read Only|"
+                            th:selected="${role.role.toString() == 'READ_ONLY'}"></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <button type="submit">Update Roles</button>
+</form>
+
+<a th:href="@{/joint_albums/{albumId}/edit(albumId=${album.id})}">
+    <button>Back to Edit Album</button>
+</a>
+
+</body>
+</html>

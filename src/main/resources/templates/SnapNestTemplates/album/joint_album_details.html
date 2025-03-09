@@ -20,13 +20,15 @@
 <h2>Photos in this album</h2>
 <ul>
     <li th:each="photo : ${photos}">
-        <a th:href="@{/photo/{photoId}(photoId=${photo.id})}">
+        <a th:href="@{/joint_albums/{albumId}/photo/{photoId}(albumId=${album.id}, photoId=${photo.id})}">
             <img th:src="@{${photo.url}}" alt="Photo" width="150">
         </a>
-        <span th:if="${photo.isPublic}" style="color: green;">Public</span>
-        <span th:if="${!photo.isPublic}" style="color: red;">Private</span>
     </li>
 </ul>
+
+<a th:if="${role == 'OWNER'}" th:href="@{/joint_albums/{albumId}/edit(albumId=${album.id})}">
+    Edit Album
+</a>
 
 <a href="/joint_albums">Back to Joint Albums</a>
 

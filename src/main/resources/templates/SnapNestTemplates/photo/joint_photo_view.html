@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Photo</title>
+
+</head>
+<body>
+<div class="container">
+    <h2>View Photo</h2>
+    <div class="photo-container">
+        <img th:src="${photo.url}" th:alt="${photo.name}" style="max-width: 100%; height: auto;">
+    </div>
+    <p th:text="'Photo: ' + ${photo.name}"></p>
+    <p th:text="'Uploaded by: ' + ${photo.user.username}"></p>
+
+    <a href="/joint_albums" class="btn btn-primary">Back to Joint Albums</a>
+
+    <input type="hidden" id="role" th:value="${role}">
+
+    <button id="editPhotoButton" onclick="toggleEditForm()">Edit Photo</button>
+
+    <div id="editPhotoForm" style="display: none;">
+        <form th:action="@{/joint_albums/{albumId}/edit_photo/{photoId}(albumId=${photo.album.id}, photoId=${photo.id})}" method="post">
+            <label for="photoName">New Name:</label>
+            <input type="text" id="photoName" name="newName" th:value="${photo.name}" required>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <form th:action="@{/joint_albums/{albumId}/delete_photo/{photoId}(albumId=${photo.album.id}, photoId=${photo.id})}" method="post">
+        <button type="submit" id="deleteButton">Delete Photo</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let userRole = document.getElementById("role").value;
+        let deleteButton = document.getElementById("deleteButton");
+        let editButton = document.getElementById("editPhotoButton");
+
+        if (userRole !== "OWNER" && userRole !== "READ_WRITE") {
+            deleteButton.disabled = true;
+            editButton.disabled = true;
+        }
+    });
+
+    function toggleEditForm() {
+        let form = document.getElementById("editPhotoForm");
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Joint Album</title>
+</head>
+<body>
+<h1>Edit Album: <span th:text="${album.name}"></span></h1>
+
+<form th:action="@{/joint_albums/{albumId}/edit(albumId=${album.id})}" method="POST">
+    <div>
+        <label for="albumName">Album Name:</label>
+        <input type="text" id="albumName" name="albumName" th:value="${album.name}" required>
+    </div>
+    <div>
+        <h3>Participants:</h3>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="role : ${albumUserRoles}">
+                <td th:if="${role.user.username != album.user.username}" th:text="${role.user.username}"></td>
+                <td th:if="${role.user.username != album.user.username}" th:text="${role.role}"></td>
+                <td th:if="${role.user.username != album.user.username}">
+                    <form th:action="@{/joint_albums/{albumId}/delete/{userId}(albumId=${album.id}, userId=${role.user.id})}" method="POST">
+                        <button type="submit" name="removeUser" value="${role.user.id}">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <button type="submit">Update Album</button>
+</form>
+
+
+<h2>Edit Roles for Participants</h2>
+<a th:href="@{/joint_albums/{albumId}/edit_roles(albumId=${album.id})}">
+    <button type="button">Go to Edit Roles</button>
+</a>
+
+<h2>Add New User to Album</h2>
+<a th:href="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}">
+    <button type="button">Go to Add Users</button>
+</a>
+
+<form th:action="@{/joint_albums/{albumId}/delete(albumId=${album.id})}" method="POST" style="margin-top: 20px;">
+    <button type="submit" style="background-color: red; color: white;">Delete Album</button>
+</form>
+
+</body>
+</html>
