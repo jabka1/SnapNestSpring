@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.snapnestspring.model.*;
 import team.snapnestspring.repository.*;
+import team.snapnestspring.service.EmailService;
 import team.snapnestspring.service.PhotoService;
 import team.snapnestspring.service.UserService;
 
@@ -47,6 +48,9 @@ public class JointAlbumController {
     @Autowired
     private AlbumUserRoleRepository albumRoleUserService;
 
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping
     public String viewJointAlbums(Model model) {
         User currentUser = userService.getCurrentUser();
@@ -75,6 +79,7 @@ public class JointAlbumController {
             albumRepository.save(jointAlbum);
             AlbumUserRole albumUserRoleOwner = new AlbumUserRole(jointAlbum, currentUser, AlbumUserRole.Role.OWNER);
             albumUserRoleRepository.save(albumUserRoleOwner);
+            List<User> invitedUsers = new ArrayList<>();
             for (int i = 0; i < usernames.size(); i++) {
                 Optional<User> userOptional = userRepository.findByUsername(usernames.get(i));
                 if (userOptional.isPresent()) {
@@ -82,11 +87,13 @@ public class JointAlbumController {
                     AlbumUserRole.Role role = AlbumUserRole.Role.valueOf(roles.get(i));
                     AlbumUserRole albumUserRole = new AlbumUserRole(jointAlbum, user, role);
                     albumUserRoleRepository.save(albumUserRole);
+                    invitedUsers.add(user);
                 } else {
                     model.addAttribute("error", "User '" + usernames.get(i) + "' not found.");
                     return "SnapNestTemplates/album/create_joint_album";
                 }
             }
+            emailService.sendAlbumInvitationEmails(jointAlbum, invitedUsers);
             return "redirect:/joint_albums";
         } catch (Exception e) {
             model.addAttribute("error", "Error creating joint album: " + e.getMessage());
@@ -195,9 +202,6 @@ public class JointAlbumController {
         return "redirect:/joint_albums/" + albumId;
     }
 
-
-
-
     @GetMapping("/{albumId}/edit")
     public String showEditAlbumForm(@PathVariable Long albumId, Model model) {
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);
@@ -273,10 +277,14 @@ public class JointAlbumController {
         Optional<Album> album = albumRepository.findById(albumId);
         if (album.isPresent()) {
             List<String> notFoundUsers = new ArrayList<>();
+            List<User> addedUsers = new ArrayList<>();
 
             for (String username : usernames) {
-                if (userRepository.findByUsername(username).isEmpty()) {
+                Optional<User> userOptional = userRepository.findByUsername(username);
+                if (userOptional.isEmpty()) {
                     notFoundUsers.add(username);
+                } else {
+                    addedUsers.add(userOptional.get());
                 }
             }
 
@@ -295,12 +303,16 @@ public class JointAlbumController {
                     albumUserRoleRepository.save(albumUserRole);
                 }
             }
+
+            emailService.sendAlbumInvitationEmails(album.get(), addedUsers);
+
             return "redirect:/joint_albums/" + albumId;
         } else {
             model.addAttribute("error", "Album not found");
             return "redirect:/joint_albums";
         }
     }
+
 
     @GetMapping("/{albumId}/edit_roles")
     public String showEditRolesForm(@PathVariable Long albumId, Model model) {
