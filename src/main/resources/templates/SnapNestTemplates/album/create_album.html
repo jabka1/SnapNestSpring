@@ -4,23 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create an album</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, .5);
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            font-size: 1.2rem;
+            color: black;
+            text-decoration: none;
+        }
+
+        .divider {
+            margin: 20px 0;
+            border: 0;
+            height: 2px;
+            background: lightgray;
+            opacity: 0.8;
+        }
+
+        .center-button {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container">
-    <h1>Create an album</h1>
+    <center>
+        <h1 class="header-title">Create an album</h1>
+    </center>
 
     <form th:action="@{/createAlbum}" method="post">
         <input type="hidden" name="parentAlbumId" th:value="${parentAlbumId}">
 
-        <label for="albumName">New album title:</label>
-        <input type="text" id="albumName" name="albumName" required>
+        <div class="form-group mb-3">
+            <label for="albumName">New album title:</label>
+            <input type="text" id="albumName" name="albumName" required class="form-control">
+        </div>
 
-        <button type="submit">Create</button>
+        <div class="center-button">
+            <button type="submit" class="btn btn-custom mb-3">Create</button>
+        </div>
     </form>
 
-    <h3><a href="/albums" >Back to main album</a></h3>
+    <hr class="divider">
+
+    <div class="center-button">
+        <h3><a href="/albums" class="back-link">Back to main album</a></h3>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

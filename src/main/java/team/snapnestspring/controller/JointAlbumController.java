@@ -101,7 +101,7 @@ public class JointAlbumController {
         }
     }
 
-    @GetMapping("/{albumId}")
+    /*@GetMapping("/{albumId}")
     public String showAlbumDetails(@PathVariable Long albumId, Model model) {
         Optional<Album> optionalAlbum = albumRepository.findById(albumId);
         if (optionalAlbum.isPresent()) {
@@ -120,6 +120,35 @@ public class JointAlbumController {
             model.addAttribute("album", album);
             model.addAttribute("role", role);
             model.addAttribute("photos", photos);
+
+            return "SnapNestTemplates/album/joint_album_details";
+        } else {
+            model.addAttribute("error", "Album not found");
+            return "redirect:/joint_albums";
+        }
+    }*/
+
+    @GetMapping("/{albumId}")
+    public String showAlbumDetails(@PathVariable Long albumId, Model model) {
+        Optional<Album> optionalAlbum = albumRepository.findById(albumId);
+        if (optionalAlbum.isPresent()) {
+            Album album = optionalAlbum.get();
+            User currentUser = userService.getCurrentUser();
+
+            Optional<AlbumUserRole> albumUserRole = albumUserRoleRepository.findByAlbumIdAndUserId(albumId, currentUser.getId());
+
+            String role = "NONE";
+            if (albumUserRole.isPresent()) {
+                role = albumUserRole.get().getRole().name();
+            }
+
+            List<Photo> photos = photoService.getPhotosByAlbumId(albumId);
+            List<AlbumUserRole> participants = albumUserRoleRepository.findByAlbumId(albumId);
+
+            model.addAttribute("album", album);
+            model.addAttribute("role", role);
+            model.addAttribute("photos", photos);
+            model.addAttribute("participants", participants);
 
             return "SnapNestTemplates/album/joint_album_details";
         } else {

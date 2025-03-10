@@ -4,29 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Users to Joint Album</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group input, .form-group select {
+            margin-bottom: 10px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            width: 100%;
+        }
+
+        .user-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .removeUserBtn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Add Users to Album: <span th:text="${album.name}"></span></h1>
-
-<form id="addUserForm" th:action="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}" method="POST">
-    <div id="userInputs">
-        <div class="user-input">
-            <input type="text" class="username" name="usernames" placeholder="Enter username" required>
-            <select name="roles">
-                <option value="READ_WRITE">Read & Write</option>
-                <option value="READ_ONLY">Read Only</option>
-            </select>
-            <button type="button" class="removeUserBtn">X</button>
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <button type="button" id="addUserBtn">Add another user</button><br>
+<div class="container">
+    <h1 class="header-title">Add Users to Album: <span th:text="${album.name}"></span></h1>
 
-    <button type="submit" id="addUsersBtn" disabled>Add Users</button>
-</form>
+    <form id="addUserForm" th:action="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}" method="POST">
+        <div id="userInputs">
+            <div class="user-input">
+                <input type="text" class="form-control username" name="usernames" placeholder="Enter username" required>
+                <select class="form-control" name="roles">
+                    <option value="READ_WRITE">Read & Write</option>
+                    <option value="READ_ONLY">Read Only</option>
+                </select>
+                <button type="button" class="removeUserBtn">X</button>
+            </div>
+        </div>
 
-<div id="errorMessage" style="color: red;"></div>
+        <button type="button" id="addUserBtn" class="btn btn-secondary mb-2">Add another user</button>
+        <button type="submit" id="addUsersBtn" class="btn btn-custom" disabled>Add Users</button>
+    </form>
+
+    <div id="errorMessage" class="text-danger mt-2"></div>
+</div>
 
 <script>
     document.getElementById("addUserBtn").addEventListener("click", function () {
@@ -34,8 +127,8 @@
         let div = document.createElement("div");
         div.classList.add("user-input");
         div.innerHTML = `
-            <input type="text" class="username" name="usernames" placeholder="Enter username" required>
-            <select name="roles">
+            <input type="text" class="form-control username" name="usernames" placeholder="Enter username" required>
+            <select class="form-control" name="roles">
                 <option value="READ_WRITE">Read & Write</option>
                 <option value="READ_ONLY">Read Only</option>
             </select>

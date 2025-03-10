@@ -1,6 +1,8 @@
 package team.snapnestspring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,15 @@ public class PhotoController {
 
     @Autowired
     private PhotoRepository photoRepository;
+
+    @GetMapping("/mainPage")
+    public String mainPage(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated = auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal());
+
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        return "SnapNestTemplates/mainPage";
+    }
 
     @GetMapping("/albums")
     public String showMainAlbum(Model model) {

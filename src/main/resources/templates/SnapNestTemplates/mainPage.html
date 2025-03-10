@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapNest - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 20px;
+        }
+        .feature {
+            margin: 20px 0;
+            padding: 20px;
+            background: #e9f2ff;
+            border-radius: 8px;
+        }
+        .feature h3 {
+            color: black;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item" th:if="${isAuthenticated}">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item" th:if="${isAuthenticated}">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item" th:if="${isAuthenticated}">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item" th:if="${isAuthenticated}">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item" th:if="${!isAuthenticated}">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item" th:if="${!isAuthenticated}">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="header-title">📸 Welcome to SnapNest!</h1>
+    <p>🌟 Your memories, safely stored and easily shared. 🖼️</p>
+
+    <div class="feature">
+        <h3>🔹 Create Personal Albums 📂</h3>
+        <p>📤 Upload and organize your favorite photos into secure albums. 🛡️ Keep them safe, keep them yours!</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Themed Albums 🏖️</h3>
+        <p>🌍 Explore and create albums around themes like travel 🌍, family 👨‍👩‍👧‍👦, pets 🐶, food 🍕, and more. Organize your memories based on what matters most to you!</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Share Your Photos 📤</h3>
+        <p>💌 Send album and photo links to friends and family – no registration required! 📲</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Control Privacy of Your Photos 🔒</h3>
+        <p>🔑 You can make your photos either private 🔐 or public 🌎, giving you full control over who can view them. Share with selected people or the entire world!</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Group Albums for Events 🎉</h3>
+        <p>🎂 Create albums for specific events like birthdays 🎈, holidays 🎄, or vacations 🌴, and invite friends to contribute their photos! 📸</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Collaborative Albums with Roles 🤝</h3>
+        <p>👥 Create shared albums and assign roles:</p>
+        <ul style="list-style-type: none; padding: 0;">
+            <li>👑 <b>Owner</b> - Full control over the album.</li>
+            <li>📝 <b>Read&Write</b> - Add and remove photos.</li>
+            <li>👀 <b>ReadOnly</b> - View photos without making changes.</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Access from Any Device 💻📱</h3>
+        <p>📱 Enjoy seamless access on mobile, tablet, or desktop. Stay connected anywhere, anytime!</p>
+    </div>
+
+    <div class="feature">
+        <h3>🔹 Privacy & Security 🔐</h3>
+        <p>Your photos are protected – you control who sees them. 🛡️ Keep your memories safe with SnapNest!</p>
+    </div>
+
+    <a href="/register" class="btn btn-custom">🚀 Get Started 🚀</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

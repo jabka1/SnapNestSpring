@@ -1,24 +1,173 @@
-<form id="jointAlbumForm" action="/joint_albums/create" method="POST">
-    <label for="albumName">Album Name</label>
-    <input type="text" id="albumName" name="albumName" required><br>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Joint Album</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
 
-    <div id="userInputs">
-        <div class="user-input">
-            <input type="text" class="username" name="usernames" placeholder="Enter username" required>
-            <select name="roles">
-                <option value="READ_WRITE">Read & Write</option>
-                <option value="READ_ONLY">Read Only</option>
-            </select>
-            <button type="button" class="removeUserBtn">X</button>
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .user-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .user-input input, .user-input select {
+            width: auto;
+            flex: 1;
+        }
+
+        .removeUserBtn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .removeUserBtn:hover {
+            background-color: #c0392b;
+        }
+
+        #addUserBtn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        #addUserBtn:hover {
+            background-color: #0056b3;
+        }
+
+        #createAlbumBtn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            width: 100%;
+        }
+
+        #createAlbumBtn:disabled {
+            background-color: #cccccc;
+        }
+
+        #errorMessage {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <button type="button" id="addUserBtn">Add another user</button><br>
+<div class="container">
+    <h1>Create Joint Album</h1>
+    <form id="jointAlbumForm" action="/joint_albums/create" method="POST">
+        <div class="form-group">
+            <label for="albumName">Album Name</label>
+            <input type="text" id="albumName" name="albumName" required placeholder="Enter album name">
+        </div>
 
-    <button type="submit" id="createAlbumBtn" disabled>Create Joint Album</button>
-</form>
+        <div id="userInputs">
+            <div class="user-input">
+                <input type="text" class="username" name="usernames" placeholder="Enter username" required>
+                <select name="roles">
+                    <option value="READ_WRITE">Read & Write</option>
+                    <option value="READ_ONLY">Read Only</option>
+                </select>
+                <button type="button" class="removeUserBtn">X</button>
+            </div>
+        </div>
 
-<div id="errorMessage" style="color: red;"></div>
+        <button type="button" id="addUserBtn">Add another user</button>
+
+        <button type="submit" id="createAlbumBtn" disabled>Create Joint Album</button>
+    </form>
+
+    <div id="errorMessage"></div>
+</div>
 
 <script>
     document.getElementById("addUserBtn").addEventListener("click", function () {
@@ -85,3 +234,6 @@
             });
     }
 </script>
+
+</body>
+</html>

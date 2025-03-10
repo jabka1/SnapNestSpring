@@ -4,88 +4,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Albums and Photos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .share-section button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-            transition: background-color 0.3s;
+        body {
+            background-color: #f8f9fa;
         }
-        .share-section button.enabled {
-            background-color: #007BFF;
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
             color: white;
         }
-        .share-section button.enabled:hover {
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-custom:hover {
             background-color: #0056b3;
+            color: #fff;
         }
-        .share-section button.disabled {
-            background-color: #ccc;
-            color: #666;
-            cursor: not-allowed;
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
         }
-        .share-section input {
-            border: 1px solid #ccc;
-            padding: 5px 10px;
+
+        .photo-item {
+            text-align: center;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            width: 60%;
+            padding: 10px;
+            background-color: #f9f9f9;
+            width: 200px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
         }
+
+        .photo-item img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .photo-title {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .photo-status {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .header {
+            background-color: #007bff;
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .header a {
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .share-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .copied-message {
+            margin-top: 5px;
             color: green;
             font-weight: bold;
-            margin-left: 10px;
             display: none;
         }
+
+        .divider {
+            margin: 20px 0;
+            border: 0;
+            height: 2px;
+            background: lightgray;
+            opacity: 0.8;
+        }
+
+        .folder-icon {
+            font-size: 40px;
+            color: #f0ad4e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .folder-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .folder-link:hover .folder-icon {
+            color: #d89a40;
+        }
+
+        .folder-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            width: 200px;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .album-title {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            max-width: 180px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .album-header-title {
+            font-weight: bold;
+            font-size: 2rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            max-width: 400px;
+            display: block;
+            margin-top: 10px;
+        }
+
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 th:text="${album != null ? album.name : 'Main album'}">Albums and Photos</h1>
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <a th:href="@{/createAlbum(parentAlbumId=${album != null ? album.id : null})}">
-        <button>Create an album</button>
-    </a>
+<div class="container">
+
+    <center>
+        <h1 th:text="${album != null ? album.name : 'Main album'}" class="album-header-title">Albums and Photos</h1>
+    </center>
+
+    <hr class="border-muted" /> <br>
+
+    <center>
+        <a th:href="@{/createAlbum(parentAlbumId=${album != null ? album.id : null})}">
+            <button class="btn btn-custom mb-3">Create an album</button>
+        </a>
+    </center>
+
+    <hr class="border-muted" /> <br>
 
     <form th:action="@{${uploadUrl}}" method="post" enctype="multipart/form-data">
-        <label for="file">Select a photo:</label>
-        <input type="file" name="file" id="file" required accept="image/*" />
+        <div class="form-group mb-3">
+            <label for="file">Select a photo:</label>
+            <input type="file" name="file" id="file" required accept="image/*" class="form-control" />
+        </div>
 
-        <label for="isPublic">Public?</label>
-        <input type="checkbox" name="isPublic" id="isPublic" />
+        <div class="form-group mb-3">
+            <label for="isPublic">Public?</label>
+            <input type="checkbox" name="isPublic" id="isPublic" />
+        </div>
 
-        <button type="submit">Download</button>
+        <button type="submit" class="btn btn-custom">Download</button>
     </form>
 
-    <h2>Albums</h2>
-    <ul>
-        <li th:each="subAlbum : ${albums}">
-            <a th:href="@{/albums/{albumId}(albumId=${subAlbum.id})}" th:text="${subAlbum.name}">Album</a>
-        </li>
-    </ul>
+    <br> <hr class="border-muted" /> <br>
 
-    <h2>Photos in this album</h2>
-    <ul>
-        <li th:each="photo : ${photos}">
-            <a th:href="@{/photo/{photoId}(photoId=${photo.id})}">
-                <img th:src="${photo.url}" alt="Photo" width="150">
+    <h3>Albums</h3>
+    <div class="photo-grid">
+        <div class="folder-item" th:each="subAlbum : ${albums}">
+            <a th:href="@{/albums/{albumId}(albumId=${subAlbum.id})}" class="folder-link">
+                <div class="folder-icon">📁</div>
+                <div class="album-title" th:text="${subAlbum.name}">Album</div>
             </a>
-            <span th:if="${photo.isPublic}" style="color: green;">Public</span>
-            <span th:if="${!photo.isPublic}" style="color: red;">Private</span>
-        </li>
-    </ul>
-
-    <a th:if="${isOwner}" th:href="@{/albums/{albumId}/edit(albumId=${album.id})}">
-        <button>Edit album</button>
-    </a>
-
-    <div class="share-section" th:if="${isOwner}">
-        <button id="shareAlbumButton" th:data-album-id="${album.id}" class="enabled">Share album</button>
-        <input type="text" id="albumUrl" th:value="${sharedUrl}" readonly />
-        <span id="albumCopiedMessage" class="copied-message">In the clipboard</span>
+        </div>
     </div>
-    <h3 th:if="${rootAlbum != true}"><a href="/albums">Back to main album</a></h3>
+
+    <br> <hr class="border-muted" /> <br>
+
+    <h3>Photos in this album</h3>
+    <div class="photo-grid">
+        <div class="photo-item" th:each="photo : ${photos}">
+            <a th:href="@{/photo/{photoId}(photoId=${photo.id})}">
+                <img th:src="${photo.url}" alt="Photo">
+            </a>
+            <div class="photo-title" th:text="${photo.name}">Photo Name</div>
+            <div class="photo-status">
+                <span th:if="${photo.isPublic}" style="color: green;">Public</span>
+                <span th:if="${!photo.isPublic}" style="color: red;">Private</span>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:if="${isOwner}">
+        <hr class="divider">
+        <a th:href="@{/albums/{albumId}/edit(albumId=${album.id})}">
+            <center>
+                <button class="btn btn-custom mb-3">Edit album</button>
+            </center>
+        </a>
+    </th:block>
+
+    <th:block th:if="${isOwner}">
+        <hr class="divider">
+        <div class="share-section">
+            <button id="shareAlbumButton" th:data-album-id="${album.id}" class="btn btn-custom">Share album</button>
+            <div class="copy-container">
+                <input type="text" id="albumUrl" th:value="${sharedUrl}" readonly class="form-control" />
+                <span id="albumCopiedMessage" class="copied-message">In the clipboard</span>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${rootAlbum != true}">
+        <hr class="divider">
+        <center>
+            <a href="/albums" class="btn btn-link-custom">Back to main album</a>
+        </center>
+    </th:block>
+
 
 </div>
 
@@ -105,11 +322,13 @@
                     copiedMessage.style.display = "none";
                 }, 2000);
             }).catch(function (err) {
-                console.error('Не вдалося скопіювати текст: ', err);
+                console.error('Could not copy text: ', err);
             });
         });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

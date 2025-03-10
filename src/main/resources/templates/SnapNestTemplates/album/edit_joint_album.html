@@ -1,54 +1,188 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Joint Album</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, .5);
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            width: 100%;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            border: 0;
+            height: 2px;
+            background: lightgray;
+            opacity: 0.8;
+        }
+
+        .back-link {
+            font-size: 1.2rem;
+            color: black;
+            text-decoration: none;
+        }
+
+        .center-button {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Edit Album: <span th:text="${album.name}"></span></h1>
 
-<form th:action="@{/joint_albums/{albumId}/edit(albumId=${album.id})}" method="POST">
-    <div>
-        <label for="albumName">Album Name:</label>
-        <input type="text" id="albumName" name="albumName" th:value="${album.name}" required>
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div>
-        <h3>Participants:</h3>
-        <table>
-            <tr>
-                <th>User</th>
-                <th>Role</th>
-                <th>Action</th>
-            </tr>
-            <tr th:each="role : ${albumUserRoles}">
-                <td th:if="${role.user.username != album.user.username}" th:text="${role.user.username}"></td>
-                <td th:if="${role.user.username != album.user.username}" th:text="${role.role}"></td>
-                <td th:if="${role.user.username != album.user.username}">
-                    <form th:action="@{/joint_albums/{albumId}/delete/{userId}(albumId=${album.id}, userId=${role.user.id})}" method="POST">
-                        <button type="submit" name="removeUser" value="${role.user.id}">Remove</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
+</nav>
+
+<div class="container">
+    <h1 class="header-title">Edit Joint Album</h1>
+
+    <form th:action="@{/joint_albums/{albumId}/edit(albumId=${album.id})}" method="POST">
+        <div class="form-group mb-3">
+            <label for="albumName">Album Name:</label>
+            <input type="text" id="albumName" name="albumName" th:value="${album.name}" required class="form-control">
+        </div>
+        <div class="center-button">
+            <button type="submit" class="btn btn-custom">Update Album</button>
+        </div>
+    </form>
+
+    <hr class="border-muted" /> <br>
+
+    <h3>Participants</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="role : ${albumUserRoles}" th:if="${role.user.username != album.user.username}">
+            <td th:text="${role.user.username}"></td>
+            <td th:text="${role.role}"></td>
+            <td>
+                <form th:action="@{/joint_albums/{albumId}/delete/{userId}(albumId=${album.id}, userId=${role.user.id})}" method="POST">
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="center-button">
+        <a th:href="@{/joint_albums/{albumId}/edit_roles(albumId=${album.id})}" class="btn btn-custom">Edit Roles</a>
     </div>
-    <button type="submit">Update Album</button>
-</form>
 
+    <hr class="border-muted" /> <br>
 
-<h2>Edit Roles for Participants</h2>
-<a th:href="@{/joint_albums/{albumId}/edit_roles(albumId=${album.id})}">
-    <button type="button">Go to Edit Roles</button>
-</a>
+    <div class="center-button">
+        <a th:href="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}" class="btn btn-custom">Add New User</a>
+    </div>
 
-<h2>Add New User to Album</h2>
-<a th:href="@{/joint_albums/{albumId}/add_users(albumId=${album.id})}">
-    <button type="button">Go to Add Users</button>
-</a>
+    <hr class="border-muted" /> <br>
 
-<form th:action="@{/joint_albums/{albumId}/delete(albumId=${album.id})}" method="POST" style="margin-top: 20px;">
-    <button type="submit" style="background-color: red; color: white;">Delete Album</button>
-</form>
+    <form th:action="@{/joint_albums/{albumId}/delete(albumId=${album.id})}" method="POST" onsubmit="return confirm('Delete album?');">
+        <div class="center-button">
+            <button type="submit" class="btn btn-danger">Delete Album</button>
+        </div>
+    </form>
 
+    <hr class="border-muted" /> <br>
+
+    <div class="center-button">
+        <a th:href="@{/joint_albums/{albumId}(albumId=${album.id})}" class="back-link">Back to album</a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

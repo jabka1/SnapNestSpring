@@ -1,6 +1,176 @@
-<h1>Joint Albums</h1>
-<div th:each="album : ${jointAlbums}">
-    <p th:text="${album.name}"></p>
-    <p>Owner: <span th:text="${album.user.username}"></span></p>
-    <a th:href="@{/joint_albums/{albumId}(albumId=${album.id})}">View Album</a>
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joint Albums</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white;
+        }
+
+        .navbar-custom .navbar-brand:hover, .navbar-custom .nav-link:hover {
+            color: #d1e7fd;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .folder-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            width: 200px;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-icon {
+            font-size: 40px;
+            color: #f0ad4e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .folder-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .folder-link:hover .folder-icon {
+            color: #d89a40;
+        }
+
+        .album-title {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            max-width: 180px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .album-header-title {
+            font-weight: bold;
+            font-size: 2rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            max-width: 400px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            border: 0;
+            height: 2px;
+            background: lightgray;
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/mainPage">SnapNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/joint_albums">Joint Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/albums">Albums</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <center>
+        <h1 class="album-header-title">Joint Albums</h1>
+    </center>
+
+    <hr class="border-muted" /> <br>
+
+    <center>
+        <a th:href="@{/joint_albums/create}">
+            <button class="btn btn-custom mb-3">Create Joint Album</button>
+        </a>
+    </center>
+
+    <hr class="border-muted" /> <br>
+
+    <h3>Joint albums</h3>
+    <div class="album-grid">
+        <div th:each="album : ${jointAlbums}" class="folder-item">
+            <a th:href="@{/joint_albums/{albumId}(albumId=${album.id})}" class="folder-link">
+                <div class="folder-icon">📁</div>
+                <p th:text="${album.name}" class="album-title"></p>
+                <p class="album-owner">Owner: <span th:text="${album.user.username}"></span></p>
+            </a>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
