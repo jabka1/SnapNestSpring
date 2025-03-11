@@ -4,9 +4,31 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 
 **Based on [SecureLoginSystemSpring](https://github.com/jabka1/SecureLoginSystemSpring), ensuring a robust and secure login & registration system**
 
-<span style="color: red; font-weight: bold;">
-🚨 Pay attention! Temporarily, the platform uses the SMTP sandbox to send messages, emails will not be sent to the user directly, but will be displayed in the sandbox by MailTrap.
-</span>
+<br>
+
+## Deployment
+
+The platform is currently deployed and running on **AWS EC2**. You can access the main page directly through the link below:
+
+http://34.201.46.238:8080/mainPage
+
+<br>
+
+### ⚠️ Clipboard Restrictions on HTTP  
+
+❗ **Attention!** Many modern browsers block access to the clipboard if the service uses HTTP and does not have an SSL certificate.  
+
+🔴 This may cause problems with the copy link button to share a photo or album, which uses your clipboard, if you access the service via this link. Use the field next to where an existing link is already entered to share.
+
+<br>
+
+### ⚠️ Email Functionality (SMTP Sandbox)  
+
+❗ **Attention!** The platform currently uses an **SMTP sandbox** for sending emails.  
+
+🔴 Emails will **not be sent directly** to users but will instead be available in the sandbox via **MailTrap**.  
+
+<br>
 
 ## Features
 ### User Account Features
@@ -35,6 +57,8 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 - Email notifications when a user is added to a shared album
 
 
+<br>
+
 ## Prerequisites
 - Java 17 or higher
 - MySQL 8 or higher
@@ -43,8 +67,11 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 - A Google reCAPTCHA API key (site key and secret key)
 - An email service for sending emails (SMTP configuration)
 - A Google Cloud Platform project with OAuth2 credentials for Google Login
-- Have a user's IAM on AWS, and a created S3 Bucket
+- IAM on AWS
+- AWS S3 Bucket
+- AWS EC2 with created instance
 
+<br>
 
 ## Technologies Used
 - Spring Boot: Backend framework
@@ -62,6 +89,9 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 - Mailtrap: Service for creating SMTP sandboxes for sending emails
 - Railway: Service for creating a remote MySQL database
 - AWS S3 Bucket: Service for remote file storage
+- AWS EC2: Service to create virtual servers in the cloud
+
+<br>
 
 ## Installation
 
@@ -158,6 +188,8 @@ Open your browser and navigate to:
 ```bash
 http://localhost:8080
 ```
+
+<br>
 
 ## Screenshots
 
