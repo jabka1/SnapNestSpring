@@ -1,5 +1,6 @@
 package team.snapnestspring.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,7 +60,7 @@ public class PhotoController {
         return "SnapNestTemplates/album/albums";
     }
 
-    @GetMapping("/albums/{albumId}")
+    /*@GetMapping("/albums/{albumId}")
     public String viewAlbum(@PathVariable Long albumId, Model model, Principal principal) {
         User user = userService.getCurrentUser();
         Optional<Album> albumOpt = albumRepository.findByIdAndUserIdAndIsJointFalse(albumId, user.getId());
@@ -88,7 +89,42 @@ public class PhotoController {
         model.addAttribute("sharedUrl", sharedUrl);
 
         return "SnapNestTemplates/album/albums";
+    }*/
+
+    @GetMapping("/albums/{albumId}")
+    public String viewAlbum(@PathVariable Long albumId, Model model, Principal principal, HttpServletRequest request) {
+        User user = userService.getCurrentUser();
+        Optional<Album> albumOpt = albumRepository.findByIdAndUserIdAndIsJointFalse(albumId, user.getId());
+
+        if (albumOpt.isEmpty()) {
+            return "redirect:/albums";
+        }
+
+        Album album = albumOpt.get();
+        String uploadUrl = "/albums/" + album.getId() + "/upload";
+
+        boolean isOwner = album.getUser().getUsername().equals(principal.getName());
+        String sharedUrl = null;
+
+        if (isOwner) {
+            String encodedId = Base64.getUrlEncoder().encodeToString(albumId.toString().getBytes());
+
+            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+
+            sharedUrl = baseUrl + "/shared/album/" + encodedId;
+        }
+
+        model.addAttribute("album", album);
+        model.addAttribute("albums", album.getSubAlbums());
+        model.addAttribute("photos", album.getPhotos());
+        model.addAttribute("parentAlbumId", albumId);
+        model.addAttribute("uploadUrl", uploadUrl);
+        model.addAttribute("isOwner", isOwner);
+        model.addAttribute("sharedUrl", sharedUrl);
+
+        return "SnapNestTemplates/album/albums";
     }
+
 
 
     @GetMapping("/shared/album/{encodedId}")
@@ -116,7 +152,7 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("/photo/{photoId}")
+    /*@GetMapping("/photo/{photoId}")
     public String viewPhoto(@PathVariable Long photoId, Model model, Principal principal) {
         Photo photo = photoRepository.findById(photoId)
                 .orElseThrow(() -> new RuntimeException("Photo not found"));
@@ -136,7 +172,31 @@ public class PhotoController {
             return "SnapNestTemplates/photo/photo_view";
         }
         return "SnapNestTemplates/error";
+    }*/
+
+    @GetMapping("/photo/{photoId}")
+    public String viewPhoto(@PathVariable Long photoId, Model model, Principal principal, HttpServletRequest request) {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+
+        boolean isOwner = photo.getUser().getUsername().equals(principal.getName());
+        String sharedUrl = null;
+
+        if (isOwner) {
+            model.addAttribute("photo", photo);
+            model.addAttribute("isPublic", photo.isPublic());
+            model.addAttribute("isOwner", isOwner);
+            if (photo.isPublic()) {
+                String encodedId = Base64.getUrlEncoder().encodeToString(photoId.toString().getBytes());
+                String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+                sharedUrl = baseUrl + "/shared/photo/" + encodedId;
+                model.addAttribute("sharedUrl", sharedUrl);
+            }
+            return "SnapNestTemplates/photo/photo_view";
+        }
+        return "SnapNestTemplates/error";
     }
+
 
     @GetMapping("/shared/photo/{encodedId}")
     public String sharedPhoto(@PathVariable String encodedId, Model model) {

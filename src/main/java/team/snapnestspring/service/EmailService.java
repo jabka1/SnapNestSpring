@@ -1,5 +1,6 @@
 package team.snapnestspring.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -29,7 +30,7 @@ public class EmailService {
     @Autowired
     private AlbumUserRoleRepository albumUserRoleRepository;
 
-    public void sendActivationEmail(String toEmail, String activationToken) {
+    /*public void sendActivationEmail(String toEmail, String activationToken) {
         String subject = "Account Activation";
         String activationLink = "http://localhost:8080/activate?token=" + activationToken;
         String message = "Click the following link to activate your account: " + activationLink;
@@ -46,7 +47,30 @@ public class EmailService {
         } catch (Exception e) {
             System.err.println("Error sending email: " + e.getMessage());
         }
+    }*/
+
+    public void sendActivationEmail(String toEmail, String activationToken, HttpServletRequest request) {
+        String subject = "Account Activation";
+
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+
+        String activationLink = baseUrl + "/activate?token=" + activationToken;
+        String message = "Click the following link to activate your account: " + activationLink;
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(fromEmail);
+        mailMessage.setTo(toEmail);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+
+        try {
+            mailSender.send(mailMessage);
+            System.out.println("Activation email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
     }
+
 
     public void sendTwoFactorCode(String toEmail, String twoFactorCode) {
         String subject = "Your 2FA Code";

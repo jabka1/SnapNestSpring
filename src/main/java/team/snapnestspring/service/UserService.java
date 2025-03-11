@@ -1,5 +1,6 @@
 package team.snapnestspring.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -30,7 +31,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public void registerUser(String username, String password, String email) {
+   /* public void registerUser(String username, String password, String email) {
         String encodedPassword = passwordEncoder.encode(password);
         String activationToken = java.util.UUID.randomUUID().toString();
 
@@ -44,7 +45,25 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         emailService.sendActivationEmail(user.getEmail(), activationToken);
+    }*/
+
+    public void registerUser(String username, String password, String email, HttpServletRequest request) {
+        String encodedPassword = passwordEncoder.encode(password);
+        String activationToken = java.util.UUID.randomUUID().toString();
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(encodedPassword);
+        user.setEmail(email);
+        user.setActivationtoken(activationToken);
+        user.setActivated(false);
+
+        userRepository.save(user);
+
+        // Тепер передаємо request у метод sendActivationEmail
+        emailService.sendActivationEmail(user.getEmail(), activationToken, request);
     }
+
 
     public void updateUserProfile(String username, String newPassword, String confirmPassword) {
         User currentUser = getCurrentUser();

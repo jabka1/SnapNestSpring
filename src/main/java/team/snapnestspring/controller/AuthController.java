@@ -1,5 +1,6 @@
 package team.snapnestspring.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +39,7 @@ public class AuthController {
         return "register";
     }
 
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     public String register(@RequestParam String username, @RequestParam String password,
                            @RequestParam String email, @RequestParam("g-recaptcha-response") String gRecaptchaResponse,
                            Model model) {
@@ -65,7 +66,39 @@ public class AuthController {
         }
         userService.registerUser(username, password, email);
         return "redirect:/login";
+    }*/
+
+    @PostMapping("/register")
+    public String register(@RequestParam String username, @RequestParam String password,
+                           @RequestParam String email, @RequestParam("g-recaptcha-response") String gRecaptchaResponse,
+                           Model model, HttpServletRequest request) {
+        model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
+        if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]).{8,}$")) {
+            model.addAttribute("error", "Password must meet the security policy (Minimum 8 characters, including a capital letter, a number and a symbol (!, @, #))");
+            return "register";
+        }
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            model.addAttribute("error", "Invalid email format!");
+            return "register";
+        }
+        if (userService.isUsernameTaken(username)) {
+            model.addAttribute("error", "Username is already taken!");
+            return "register";
+        }
+        if (userService.isEmailTaken(email)) {
+            model.addAttribute("error", "Email is already registered!");
+            return "register";
+        }
+        if (!verifyRecaptcha(gRecaptchaResponse)) {
+            model.addAttribute("error", "reCAPTCHA verification failed!");
+            return "register";
+        }
+
+        // Тепер передаємо request в метод registerUser
+        userService.registerUser(username, password, email, request);
+        return "redirect:/login";
     }
+
 
     @GetMapping("/activate")
     public String activateAccount(@RequestParam String token, Model model) {
