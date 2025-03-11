@@ -229,6 +229,12 @@ http://localhost:8080
 
 <br>
 
+### SMTP sandbox
+
+![MainPage](demonstration/SMTPsandbox.png)
+
+<br>
+
 ### Error page
 
 ![MainPage](demonstration/ErrorPage.png)
