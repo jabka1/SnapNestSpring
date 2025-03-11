@@ -8,27 +8,9 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 
 ## Deployment
 
-The platform is currently deployed and running on **AWS EC2**. You can access the main page directly through the link below:
+The platform is currently deployed and running on **Heroku**. You can access the main page directly through the link below:
 
-http://34.201.46.238:8080/mainPage
-
-<br>
-
-### ⚠️ Clipboard Restrictions on HTTP  
-
-❗ **Attention!** Many modern browsers block access to the clipboard if the service uses HTTP and does not have an SSL certificate.  
-
-🔴 This may cause problems with the copy link button to share a photo or album, which uses your clipboard, if you access the service via this link. Use the field next to where an existing link is already entered to share.
-
-<br>
-
-### ⚠️ Email Functionality (SMTP Sandbox)  
-
-❗ **Attention!** The platform currently uses an **SMTP sandbox** for sending emails.  
-
-🔴 Emails will **not be sent directly** to users but will instead be available in the sandbox via **MailTrap**.  
-
-<br>
+https://snapnest-a85e62dfae1a.herokuapp.com/mainPage
 
 ## Features
 ### User Account Features
@@ -69,7 +51,7 @@ http://34.201.46.238:8080/mainPage
 - A Google Cloud Platform project with OAuth2 credentials for Google Login
 - IAM on AWS
 - AWS S3 Bucket
-- AWS EC2 with created instance
+- Heroku
 
 <br>
 
@@ -89,7 +71,7 @@ http://34.201.46.238:8080/mainPage
 - Mailtrap: Service for creating SMTP sandboxes for sending emails
 - Railway: Service for creating a remote MySQL database
 - AWS S3 Bucket: Service for remote file storage
-- AWS EC2: Service to create virtual servers in the cloud
+- Heroku: Service to deploy project
 
 <br>
 
