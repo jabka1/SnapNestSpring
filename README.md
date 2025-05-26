@@ -6,12 +6,6 @@ SnapNest is a modern platform for storing, organizing, and sharing photos. Users
 
 <br>
 
-## Deployment
-
-The platform is currently deployed and running on **Heroku**. You can access the main page directly through the link below:
-
-https://snapnest-a85e62dfae1a.herokuapp.com/mainPage
-
 ## Features
 ### User Account Features
 - Change password and username
